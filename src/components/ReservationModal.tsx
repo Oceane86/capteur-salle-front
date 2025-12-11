@@ -53,8 +53,14 @@ export default function ReservationModal({ isOpen, roomName, onClose, onReserve 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Overlay with blur */}
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6 z-10">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-[#1A1A1A]">Réserver {roomName}</h2>
