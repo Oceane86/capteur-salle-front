@@ -33,7 +33,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { fetchModuleById, fetchRooms, createModule } from "@/lib/api";
+import { fetchModuleById, fetchRooms, fetchModules, createModule } from "@/lib/api";
 
 // Génération de données fictives historiques si nécessaire
 const generateHistoricalData = (currentValue: number) => {
@@ -86,21 +86,34 @@ export default function AdminModuleDetailPage() {
 
       try {
         setLoading(true);
-        const [moduleData, roomsData] = await Promise.all([
+        const [moduleData, allRooms, modules] = await Promise.all([
           fetchModuleById(moduleId),
           fetchRooms(),
+          fetchModules(),
         ]);
         setModule(moduleData);
-        setRooms(roomsData);
+
+        // Salles occupées par d'autres modules (hors module actuel)
+        const occupiedRoomIds = modules
+          .filter((m: any) => m.id !== moduleId)
+          .map((m: any) => m.room?.id || m.room?._id)
+          .filter(Boolean);
+
+        // Ne garder que les salles libres + salle actuelle du module
+        const availableRooms = allRooms.filter(
+          (r: any) => r && (r._id || r.id) && (!occupiedRoomIds.includes(r._id || r.id) || r._id === moduleData.room?.id || r.id === moduleData.room?.id)
+        );
+
+        setRooms(availableRooms);
 
         setConfig({
           name: moduleData.name || "",
-          roomId: moduleData.room?.id || "",
+          roomId: moduleData.room?.id || moduleData.room?._id || "",
           acquisitionInterval: moduleData.acquisitionIntervalSec || 30,
         });
       } catch (err) {
         console.error(err);
-        setError("Impossible de charger le module.");
+        setError("Impossible de charger le module ou les salles.");
       } finally {
         setLoading(false);
       }
@@ -253,7 +266,12 @@ export default function AdminModuleDetailPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
                       aria-required="true"
                     >
-                      {rooms.map((r) => <option key={r.id || r._id} value={r.id || r._id}>{r.name}</option>)}
+                      <option value="">-- Sélectionner une salle --</option>
+                      {rooms.map((r) => (
+                        <option key={r._id || r.id} value={r._id || r.id}>
+                          {r.name} — Étage {r.floor}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
