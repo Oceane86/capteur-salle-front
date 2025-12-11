@@ -110,7 +110,7 @@ export default function LoginScreen() {
             <section aria-labelledby="student-access" className="mt-8 pt-6 border-t border-gray-200">
               <h2 id="student-access" className="sr-only">Accès étudiant</h2>
               <p className="text-[#5F6368] text-center mb-3">
-                Vous êtes étudiant ?
+                Vous êtes étudiant ? (Lecture seule)
               </p>
               <button
                 onClick={handleStudentAccess}
@@ -119,16 +119,8 @@ export default function LoginScreen() {
               >
                 Accès sans authentification
               </button>
-              <p className="text-[#5F6368] text-center mt-2 text-sm">
-                (Lecture seule)
-              </p>
             </section>
           </section>
-
-          {/* Demo Info */}
-          <div className="mt-6 text-center text-white/90 text-sm" aria-live="polite">
-            <p>Demo: admin / admin</p>
-          </div>
         </div>
       </main>
     </>
