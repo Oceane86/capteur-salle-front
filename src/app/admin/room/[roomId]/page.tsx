@@ -118,7 +118,6 @@ export default function RoomDetails() {
             value: m.co2,
         })) || [];
 
-
     const handleReservation = async (data: { startTime: string; endTime: string; reason: string }) => {
         try {
             // Déterminer le reasonType et customReason

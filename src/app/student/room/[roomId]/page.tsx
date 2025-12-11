@@ -96,8 +96,27 @@ export default function RoomDetails() {
 
     const comfortIndex = getComfortIndex();
 
-    const tempData = roomData.history?.map((m: any) => ({ time: new Date(m.timestamp).toLocaleTimeString(), value: m.temperature })) || [];
-    const co2Data = roomData.history?.map((m: any) => ({ time: new Date(m.timestamp).toLocaleTimeString(), value: m.co2 })) || [];
+    const tempData =
+        roomData.history?.map((m: any) => ({
+            time: new Date(m.timestamp).toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+            }),
+            value: m.temperature,
+        })) || [];
+
+    const co2Data =
+        roomData.history?.map((m: any) => ({
+            time: new Date(m.timestamp).toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+            }),
+            value: m.co2,
+        })) || [];
 
     const handleReservation = async (data: { startTime: string; endTime: string; reason: string }) => {
         try {
