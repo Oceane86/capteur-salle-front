@@ -69,8 +69,8 @@ export default function RoomDetails() {
         temperature: roomData.currentMeasurement?.temperature ?? 0,
         humidity: roomData.currentMeasurement?.humidity ?? 0,
         co2: roomData.currentMeasurement?.co2 ?? 0,
-        brightness: 0,
-        noise: 0,
+        brightness: roomData.currentMeasurement?.light ?? 0,
+        noise: roomData.currentMeasurement?.soundDb ?? 0,
         needsAiring: roomData.currentMeasurement?.co2 !== undefined && roomData.currentMeasurement.co2 > 800,
         status: roomData.room.occupied ? "occupied" : "available",
     };
