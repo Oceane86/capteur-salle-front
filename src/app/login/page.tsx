@@ -27,9 +27,9 @@ export default function LoginScreen() {
       <title>Authentification | Digital Campus</title>
       <meta name="description" content="Connecter pour accéder à l'outil." />
 
-      <div className="min-h-screen bg-[#0092bd] flex items-center justify-center p-4">
+      <main className="min-h-screen bg-[#0092bd] flex items-center justify-center p-4" role="main">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl shadow-2xl p-8">
+          <section aria-labelledby="login-header" className="bg-white rounded-2xl shadow-2xl p-8">
             {/* Logo */}
             <div className="flex flex-col items-center mb-8">
               <div className="bg-[#0092bd] rounded-2xl p-4 mb-4">
@@ -38,6 +38,8 @@ export default function LoginScreen() {
                   id="Calque_2"
                   viewBox="0 0 561.27 561.27"
                   className="w-16 h-16"
+                  role="img"
+                  aria-label="Logo Digital Campus"
                 >
                   <g id="LOGO_COMPLET">
                     <path
@@ -48,7 +50,7 @@ export default function LoginScreen() {
                   </g>
                 </svg>
               </div>
-              <h1 className="text-[#1A1A1A] text-center">
+              <h1 id="login-header" className="text-[#1A1A1A] text-center">
                 Digital Campus
               </h1>
               <p className="text-[#5F6368] text-center mt-2">
@@ -57,16 +59,14 @@ export default function LoginScreen() {
             </div>
 
             {/* Login Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="login-form">
+              <h2 id="login-form" className="sr-only">Connexion administrateur</h2>
               <div>
-                <label
-                  htmlFor="username"
-                  className="block text-[#1A1A1A] mb-2"
-                >
+                <label htmlFor="username" className="block text-[#1A1A1A] mb-2">
                   Nom d&apos;utilisateur
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5F6368]" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5F6368]" aria-hidden="true" />
                   <input
                     id="username"
                     type="text"
@@ -74,19 +74,17 @@ export default function LoginScreen() {
                     onChange={(e) => setUsername(e.target.value)}
                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
                     placeholder="admin"
+                    aria-required="true"
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-[#1A1A1A] mb-2"
-                >
+                <label htmlFor="password" className="block text-[#1A1A1A] mb-2">
                   Mot de passe
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5F6368]" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5F6368]" aria-hidden="true" />
                   <input
                     id="password"
                     type="password"
@@ -94,6 +92,7 @@ export default function LoginScreen() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
                     placeholder="••••••••"
+                    aria-required="true"
                   />
                 </div>
               </div>
@@ -101,34 +100,37 @@ export default function LoginScreen() {
               <button
                 type="submit"
                 className="w-full bg-[#0092bd] text-white py-3 rounded-lg hover:bg-[#007a9d] transition-colors duration-200 cursor-pointer"
+                aria-label="Se connecter en tant qu'administrateur"
               >
                 Connexion
               </button>
             </form>
 
             {/* Student Access */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
+            <section aria-labelledby="student-access" className="mt-8 pt-6 border-t border-gray-200">
+              <h2 id="student-access" className="sr-only">Accès étudiant</h2>
               <p className="text-[#5F6368] text-center mb-3">
                 Vous êtes étudiant ?
               </p>
               <button
                 onClick={handleStudentAccess}
                 className="w-full border-2 border-[#0092bd] text-[#0092bd] py-3 rounded-lg hover:bg-[#0092bd] hover:text-white transition-all duration-200 cursor-pointer"
+                aria-label="Accès étudiant en lecture seule"
               >
                 Accès sans authentification
               </button>
               <p className="text-[#5F6368] text-center mt-2 text-sm">
                 (Lecture seule)
               </p>
-            </div>
-          </div>
+            </section>
+          </section>
 
           {/* Demo Info */}
-          <div className="mt-6 text-center text-white/90 text-sm">
+          <div className="mt-6 text-center text-white/90 text-sm" aria-live="polite">
             <p>Demo: admin / admin</p>
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }
