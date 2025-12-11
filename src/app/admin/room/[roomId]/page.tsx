@@ -143,7 +143,7 @@ export default function RoomDetails() {
             <meta name="description" content="Détails de la salle" />
 
             <main className="min-h-screen bg-[#F5F7FA]" role="main">
-                <Navbar role="student" onLogout={handleLogout} />
+                <Navbar role="admin" onLogout={handleLogout} />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <button
