@@ -24,7 +24,7 @@ export default function LoginScreen() {
 
   return (
     <>
-      <title>Login | Digital Campus</title>
+      <title>Authentification | Digital Campus</title>
       <meta name="description" content="Connecter pour accéder à l'outil." />
 
       <div className="min-h-screen bg-[#0092bd] flex items-center justify-center p-4">
