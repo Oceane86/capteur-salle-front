@@ -98,7 +98,7 @@ export default function RoomDetails() {
                 {/* Alert for high CO2 */}
                 {room.needsAiring && (
                     <div className="bg-[#FFF3E0] border-l-4 border-[#FF8F00] rounded-lg p-4 mb-6 flex items-start gap-3">
-                        <AlertCircle className="w-6 h-6 text-[#FF8F00] flex-shrink-0" />
+                        <AlertCircle className="w-6 h-6 text-[#FF8F00] shrink-0" />
                         <div>
                             <p className="text-[#FF8F00] mb-1">Aération nécessaire</p>
                             <p className="text-[#5F6368] text-sm">

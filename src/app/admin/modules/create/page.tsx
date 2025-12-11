@@ -53,7 +53,7 @@ export default function AddModule() {
 
         {/* BLE Info Alert */}
         <div className="bg-[#E3F2FD] border-l-4 border-[#0092bd] rounded-lg p-4 mb-6 flex items-start gap-3">
-          <Bluetooth className="w-6 h-6 text-[#0092bd] flex-shrink-0" />
+          <Bluetooth className="w-6 h-6 text-[#0092bd] shrink-0" />
           <div>
             <p className="text-[#1A1A1A] mb-1">Configuration BLE requise</p>
             <p className="text-[#5F6368] text-sm">
@@ -136,7 +136,7 @@ export default function AddModule() {
               <div className="space-y-3">
                 {[1, 2, 3].map((step) => (
                   <div key={step} className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#0092bd] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-[#0092bd] flex items-center justify-center shrink-0 mt-0.5">
                       <span className="text-white text-sm">{step}</span>
                     </div>
                     <p className="text-[#5F6368]">
@@ -172,7 +172,7 @@ export default function AddModule() {
         {/* Help Section */}
         <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-[#FF8F00] flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-[#FF8F00] shrink-0 mt-0.5" />
             <div>
               <h3 className="text-[#1A1A1A] mb-2">Besoin d&apos;aide ?</h3>
               <p className="text-[#5F6368] text-sm">
