@@ -165,7 +165,20 @@ export default function RoomDetails() {
                         <div className="flex items-center justify-between flex-wrap gap-4">
                             <div className="flex-1">
                                 <h1 className="text-[#1A1A1A] mb-2">{room.name}</h1>
-                                <p className="text-[#5F6368]">Dernière mise à jour : {roomData.currentMeasurement?.timestamp ? new Date(roomData.currentMeasurement.timestamp).toLocaleString() : "N/A"}</p>
+                                <p className="text-[#5F6368]">
+                                    Dernière mise à jour :{" "}
+                                    {roomData.currentMeasurement?.timestamp
+                                        ? new Date(roomData.currentMeasurement.timestamp).toLocaleString('fr-FR', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit',
+                                            hour12: false,
+                                        })
+                                        : "N/A"}
+                                </p>
                             </div>
                             <div className="flex items-center gap-3">
                                 {room.needsAiring && <AlertTriangle className="w-6 h-6 text-[#FF8F00]" />}
