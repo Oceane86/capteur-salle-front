@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ReservationModal from "@/components/ReservationModal";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { fetchRoomById } from "@/lib/api";
+import { fetchRoomById, createReservation } from "@/lib/api";
 
 export default function RoomDetails() {
     const router = useRouter();
@@ -93,9 +93,48 @@ export default function RoomDetails() {
     const tempData = roomData.history?.map((m: any) => ({ time: new Date(m.timestamp).toLocaleTimeString(), value: m.temperature })) || [];
     const co2Data = roomData.history?.map((m: any) => ({ time: new Date(m.timestamp).toLocaleTimeString(), value: m.co2 })) || [];
 
-    const handleReservation = (data: { startTime: string; endTime: string; reason: string }) => {
-        console.log("Réservation:", { roomId: room.id, ...data });
-        setIsModalOpen(false);
+    const handleReservation = async (data: { startTime: string; endTime: string; reason: string }) => {
+        try {
+            // Déterminer le reasonType et customReason
+            let reasonType: 'course' | 'meeting' | 'exam' | 'study' | 'other' = 'other';
+            let customReason: string | undefined;
+
+            switch (data.reason) {
+                case 'Cours':
+                case 'TD':
+                case 'TP':
+                    reasonType = 'course';
+                    break;
+                case 'Réunion':
+                    reasonType = 'meeting';
+                    break;
+                case 'Projet':
+                case 'Étude en groupe':
+                    reasonType = 'study';
+                    break;
+                default:
+                    reasonType = 'other';
+                    customReason = data.reason;
+            }
+
+            // 🔹 Convertir les heures en dates complètes ISO
+            const today = new Date();
+            const [startHour, startMinute] = data.startTime.split(":").map(Number);
+            const [endHour, endMinute] = data.endTime.split(":").map(Number);
+
+            const startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHour, startMinute);
+            const endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute);
+
+            // Appel API avec dates complètes
+            await createReservation(room.id, startDate.toISOString(), endDate.toISOString(), reasonType, customReason);
+
+            setIsModalOpen(false);
+            alert('Réservation effectuée avec succès !');
+
+        } catch (err: any) {
+            console.error(err);
+            alert(err.response?.data?.message || 'Erreur lors de la réservation. Veuillez réessayer.');
+        }
     };
 
     return (
