@@ -46,4 +46,21 @@ export const fetchModuleById = async (moduleId: string) => {
   return res.data;
 };
 
+// PATCH : Create or update module
+export const createModule = async ({
+  hardwareId,
+  name,
+  roomId,
+}: {
+  hardwareId: string;
+  name: string;
+  roomId: string;
+}) => {
+  const res = await api.patch(`/api/modules/${hardwareId}`, {
+    name,
+    roomId,
+  });
+  return res.data;
+};
+
 export default api;

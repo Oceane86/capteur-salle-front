@@ -1,15 +1,15 @@
-// src/app/admin/modules/create/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/Toast';
 import Navbar from '@/components/Navbar';
-import { mockRooms } from '@/data/mockData';
-import { ArrowLeft, AlertCircle, Bluetooth } from 'lucide-react';
+import { fetchRooms, createModule } from '@/lib/api';
+import { ArrowLeft, Bluetooth, AlertCircle } from 'lucide-react';
 
 export default function AddModule() {
   const router = useRouter();
+  const { notify } = useToast();
 
   const [formData, setFormData] = useState({
     moduleId: '',
@@ -17,17 +17,56 @@ export default function AddModule() {
     roomId: ''
   });
 
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
   const onLogout = () => {
-    localStorage.removeItem("role");
-    router.push("/login");
+    localStorage.removeItem('role');
+    router.push('/login');
   };
 
-  const { notify } = useToast();
+  // 🔹 Récupérer les salles
+  useEffect(() => {
+    const loadRooms = async () => {
+      try {
+        const data = await fetchRooms();
+        // Assurer que c'est bien un tableau
+        if (Array.isArray(data)) {
+          setRooms(data.filter((r) => r && (r._id || r.id)));
+        } else {
+          setRooms([]);
+          notify("Erreur : les salles n'ont pas pu être chargées.", 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        notify("Impossible de charger les salles.", 'error');
+      }
+    };
+    loadRooms();
+  }, [notify]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    notify(`Module ${formData.moduleName} ajouté avec succès !`, "success");
-    router.push("/admin/modules");
+    if (!formData.moduleId || !formData.moduleName || !formData.roomId) {
+      notify("Veuillez remplir tous les champs obligatoires.", 'error');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await createModule({
+        hardwareId: formData.moduleId,
+        name: formData.moduleName,
+        roomId: formData.roomId
+      });
+      notify(`Module ${formData.moduleName} ajouté avec succès !`, 'success');
+      router.push('/admin/modules');
+    } catch (err: any) {
+      console.error(err);
+      notify(err?.response?.data?.error || 'Erreur lors de la création du module.', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,8 +109,6 @@ export default function AddModule() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-8" aria-labelledby="form-add-module">
-            <h2 id="form-add-module" className="sr-only">Formulaire de création du module</h2>
-
             <div className="space-y-6">
 
               {/* Module ID */}
@@ -82,7 +119,7 @@ export default function AddModule() {
                   type="text"
                   value={formData.moduleId}
                   onChange={(e) => setFormData({ ...formData, moduleId: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd]"
                   placeholder="Ex: module-7, IoT-G20-01"
                   required
                   aria-required="true"
@@ -98,7 +135,7 @@ export default function AddModule() {
                   type="text"
                   value={formData.moduleName}
                   onChange={(e) => setFormData({ ...formData, moduleName: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd]"
                   placeholder="Ex: IoT-G20-01"
                   required
                   aria-required="true"
@@ -113,15 +150,19 @@ export default function AddModule() {
                   id="roomId"
                   value={formData.roomId}
                   onChange={(e) => setFormData({ ...formData, roomId: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd]"
                   required
                   aria-required="true"
                 >
-                  <option value="">Sélectionner une salle</option>
-                  {mockRooms.map((room) => (
-                    <option key={room.id} value={room.id}>{room.name}</option>
+                  <option value="">-- Sélectionner une salle --</option>
+                  {rooms.map((room: any) => (
+                    <option
+                      key={room._id || room.id}
+                      value={room._id || room.id}
+                    >
+                      {room.name} — Étage {room.floor}
+                    </option>
                   ))}
-                  <option value="new">+ Nouvelle salle</option>
                 </select>
                 <p className="text-[#5F6368] text-sm mt-1">Salle dans laquelle le module sera installé</p>
               </div>
@@ -137,18 +178,19 @@ export default function AddModule() {
               </section>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
+              <div className="flex flex-col sm:flex-row gap-4 pt-6">
                 <button
                   type="submit"
-                  className="flex-1 bg-[#0092bd] text-white py-3 rounded-lg hover:bg-[#007a9d] transition-colors cursor-pointer"
+                  disabled={loading}
+                  className={`flex-1 ${loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#0092bd] hover:bg-[#007a9d]'} text-white py-3 rounded-lg`}
                   aria-label="Ajouter le module"
                 >
-                  Ajouter le module
+                  {loading ? "Création en cours..." : "Ajouter le module"}
                 </button>
                 <button
                   type="button"
                   onClick={() => router.push('/admin/modules')}
-                  className="flex-1 border-2 border-gray-300 text-[#5F6368] py-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="flex-1 border-2 border-gray-300 text-[#5F6368] py-3 rounded-lg hover:bg-gray-50"
                   aria-label="Annuler et revenir à la liste des modules"
                 >
                   Annuler
