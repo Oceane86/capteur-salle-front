@@ -18,6 +18,8 @@ type Room = {
     temperature: number;
     humidity: number;
   } | null;
+  noise?: number;
+  moduleId?: string;
 };
 
 export default function RoomsList() {
@@ -180,9 +182,11 @@ export default function RoomsList() {
                     temperature: room.lastMeasurement?.temperature ?? 0,
                     humidity: room.lastMeasurement?.humidity ?? 0,
                     co2: room.lastMeasurement?.co2 ?? 0,
-                    brightness: 0, // si tu n'as pas encore la luminosité
+                    brightness: 0,
                     needsAiring: room.lastMeasurement?.co2 !== undefined && room.lastMeasurement.co2 > 800,
                     status: room.occupied ? "occupied" : "available",
+                    noise: room.noise ?? 0,      
+                    moduleId: room.moduleId ?? '',
                   }}
                   onClick={() => router.push(`/student/room/${room.id}`)}
                 />
