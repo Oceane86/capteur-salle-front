@@ -7,6 +7,7 @@ import { ArrowLeft, Thermometer, Droplets, Wind, Sun, Volume2, AlertCircle, Cale
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ReservationModal from "@/components/ReservationModal";
+import ScheduleModal from "@/components/ScheduleModal";
 import { useToast } from "@/components/Toast";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { fetchRoomById, createReservation } from "@/lib/api";
@@ -20,6 +21,7 @@ export default function RoomDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
     const { notify } = useToast();
 
@@ -178,6 +180,14 @@ export default function RoomDetails() {
                                         <span>Réserver</span>
                                     </button>
                                 )}
+                                <button
+                                    onClick={() => setIsScheduleOpen(true)}
+                                    className="flex items-center gap-2 bg-[#64DD17] text-white px-4 py-2 rounded-lg hover:bg-[#4CAF50] cursor-pointer"
+                                    aria-label="Voir le planning"
+                                >
+                                    <Calendar className="w-5 h-5" aria-hidden="true" />
+                                    <span>Planning</span>
+                                </button>
                             </div>
                         </div>
                     </section>
@@ -351,6 +361,14 @@ export default function RoomDetails() {
                         onClose={() => setIsModalOpen(false)}
                         roomName={room.name}
                         onReserve={handleReservation}
+                    />
+
+                    {/* Schedule Modal */}
+                    <ScheduleModal
+                        isOpen={isScheduleOpen}
+                        onClose={() => setIsScheduleOpen(false)}
+                        roomName={room.name}
+                        reservations={roomData.reservations || []}
                     />
                 </div>
             </main>
