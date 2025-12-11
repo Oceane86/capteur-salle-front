@@ -63,9 +63,6 @@ export default function LoginScreen() {
               <h1 id="login-header" className="text-[#1A1A1A] text-center">
                 Digital Campus
               </h1>
-              <p className="text-[#5F6368] text-center mt-2">
-                Surveillance des salles en temps réel
-              </p>
             </div>
 
             {/* Login Form */}
