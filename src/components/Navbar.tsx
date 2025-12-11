@@ -37,7 +37,7 @@ export default function Navbar({ role, onLogout }: NavbarProps) {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link
-              href={role === "admin" ? "/admin/dashboard" : "/student/dashboard"}
+              href={role === "admin" ? "/admin/dashboard" : "/student/rooms"}
               className="flex items-center gap-2"
             >
               <div className="bg-[#0092bd] rounded-lg p-2">
