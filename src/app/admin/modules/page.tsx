@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useToast } from "@/components/Toast";
 import { mockModules, mockRooms } from "@/data/mockData";
 import { Plus, Settings, Power, RefreshCw, Battery, MapPin, Clock, Signal } from "lucide-react";
 
@@ -14,6 +15,7 @@ export default function AdminModulesPage() {
   const [showPowerModal, setShowPowerModal] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
   const [selectedModule, setSelectedModule] = useState<any | null>(null);
+  const { notify } = useToast();
 
   const onLogout = () => {
     localStorage.removeItem("role");
@@ -34,12 +36,17 @@ export default function AdminModulesPage() {
 
   const confirmPowerToggle = () => {
     setShowPowerModal(false);
-    alert(selectedModule?.status === "online" ? "Module éteint" : "Module allumé");
+    notify(
+      selectedModule?.status === "online"
+        ? "Module éteint"
+        : "Module allumé",
+      "success"
+    );
   };
 
   const confirmSync = () => {
     setShowSyncModal(false);
-    alert("Synchronisation forcée démarrée...");
+    notify("Synchronisation forcée démarrée...", "success");
   };
 
   return (

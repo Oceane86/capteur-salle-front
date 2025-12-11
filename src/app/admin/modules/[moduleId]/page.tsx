@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useToast } from "@/components/Toast";
 import { mockModules, mockRooms, generateHistoricalData } from "@/data/mockData";
 import {
   ArrowLeft,
@@ -71,19 +72,21 @@ export default function AdminModuleDetailPage() {
   const tempData = generateHistoricalData(room.temperature);
   const co2Data = generateHistoricalData(room.co2);
 
+  const { notify } = useToast();
+
   const handleSave = () => {
-    alert("Configuration enregistrée avec succès !");
+    notify("Configuration enregistrée avec succès !", "success");
   };
 
   const handleFirmwareUpdate = () => {
-    alert("Mise à jour du firmware lancée...");
+    notify("Mise à jour du firmware lancée...", "success");
   };
 
   const handlePowerToggle = () => setShowPowerModal(true);
   const handleSync = () => setShowSyncModal(true);
 
   const handleDelete = () => {
-    alert("Module supprimé avec succès !");
+    notify("Module supprimé avec succès !", "error");
     router.push("/admin/modules");
   };
 
@@ -94,12 +97,12 @@ export default function AdminModuleDetailPage() {
 
   const confirmPowerToggle = () => {
     setShowPowerModal(false);
-    alert(module.status === "online" ? "Module éteint" : "Module allumé");
+    notify(module.status === "online" ? "Module éteint" : "Module allumé", "success");
   };
 
   const confirmSync = () => {
     setShowSyncModal(false);
-    alert("Synchronisation forcée démarrée...");
+    notify("Synchronisation forcée démarrée...", "info");
   };
 
   return (

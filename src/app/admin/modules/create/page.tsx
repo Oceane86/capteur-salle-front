@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/Toast';
 import Navbar from '@/components/Navbar';
 import { mockRooms } from '@/data/mockData';
 import { ArrowLeft, AlertCircle, Bluetooth } from 'lucide-react';
@@ -21,10 +22,12 @@ export default function AddModule() {
     router.push("/login");
   };
 
+  const { notify } = useToast();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Module ${formData.moduleName} ajouté avec succès !`);
-    router.push('/admin/modules');
+    notify(`Module ${formData.moduleName} ajouté avec succès !`, "success");
+    router.push("/admin/modules");
   };
 
   return (

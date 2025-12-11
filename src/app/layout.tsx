@@ -1,15 +1,15 @@
 // src/app/layout.tsx
 import "@/app/styles/globals.css";
-
-export const metadata = {
-  title: "Digital Campus",
-  description: "Surveillance des salles en temps réel",
-};
+import { ToastProvider } from "@/components/Toast";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body>{children}</body>
+      <body>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </body>
     </html>
   );
 }
