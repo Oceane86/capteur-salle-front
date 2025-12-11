@@ -3,6 +3,9 @@
 const NotFound = () => {
   return (
     <>
+      <title>Erreur 404 | Digital Campus</title>
+      <meta name="description" content="Erreur 404" />
+      
       <div className="not-found">
         <h1>Page non trouvée</h1>
         <p>La page que vous cherchez n'existe pas ou a été déplacée.</p>

@@ -58,209 +58,214 @@ export default function RoomDetails() {
     const co2Data = generateHistoricalData(room.co2);
 
     return (
-        <div className="min-h-screen bg-[#F5F7FA]">
-            <Navbar role="student" onLogout={handleLogout} />
+        <>
+            <title>Détails de la salle | Digital Campus</title>
+            <meta name="description" content="Détails de la salle" />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <button
-                    onClick={() => router.push("/student/rooms")}
-                    className="flex items-center gap-2 text-[#5F6368] hover:text-[#0092bd] mb-6 transition-colors cursor-pointer"
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                    <span>Retour aux salles</span>
-                </button>
+            <div className="min-h-screen bg-[#F5F7FA]">
+                <Navbar role="student" onLogout={handleLogout} />
 
-                {/* Header */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div className="flex-1">
-                            <h1 className="text-[#1A1A1A] mb-2">{room.name}</h1>
-                            <p className="text-[#5F6368]">Dernière mise à jour : il y a 2 minutes</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            {room.needsAiring && (
-                                <AlertTriangle className="w-6 h-6 text-[#FF8F00]" />
-                            )}
-                            <StatusBadge status={room.status} size="lg" />
-                            {room.status === 'available' && (
-                                <button
-                                    onClick={() => setIsModalOpen(true)}
-                                    className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9a] transition-colors cursor-pointer"
-                                >
-                                    <Calendar className="w-5 h-5" />
-                                    <span>Réserver</span>
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <button
+                        onClick={() => router.push("/student/rooms")}
+                        className="flex items-center gap-2 text-[#5F6368] hover:text-[#0092bd] mb-6 transition-colors cursor-pointer"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                        <span>Retour aux salles</span>
+                    </button>
 
-                {/* Alert for high CO2 */}
-                {room.needsAiring && (
-                    <div className="bg-[#FFF3E0] border-l-4 border-[#FF8F00] rounded-lg p-4 mb-6 flex items-start gap-3">
-                        <AlertCircle className="w-6 h-6 text-[#FF8F00] shrink-0" />
-                        <div>
-                            <p className="text-[#FF8F00] mb-1">Aération nécessaire</p>
-                            <p className="text-[#5F6368] text-sm">
-                                Le niveau de CO₂ est élevé ({room.co2} ppm). Il est recommandé d&apos;aérer la pièce.
-                            </p>
-                        </div>
-                    </div>
-                )}
-
-                {/* Metrics Overview */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                    {/* Temperature */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                <Thermometer className="w-6 h-6 text-[#0092bd]" />
+                    {/* Header */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                            <div className="flex-1">
+                                <h1 className="text-[#1A1A1A] mb-2">{room.name}</h1>
+                                <p className="text-[#5F6368]">Dernière mise à jour : il y a 2 minutes</p>
                             </div>
+                            <div className="flex items-center gap-3">
+                                {room.needsAiring && (
+                                    <AlertTriangle className="w-6 h-6 text-[#FF8F00]" />
+                                )}
+                                <StatusBadge status={room.status} size="lg" />
+                                {room.status === 'available' && (
+                                    <button
+                                        onClick={() => setIsModalOpen(true)}
+                                        className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9a] transition-colors cursor-pointer"
+                                    >
+                                        <Calendar className="w-5 h-5" />
+                                        <span>Réserver</span>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Alert for high CO2 */}
+                    {room.needsAiring && (
+                        <div className="bg-[#FFF3E0] border-l-4 border-[#FF8F00] rounded-lg p-4 mb-6 flex items-start gap-3">
+                            <AlertCircle className="w-6 h-6 text-[#FF8F00] shrink-0" />
                             <div>
-                                <p className="text-[#5F6368]">Température</p>
-                                <p className="text-[#1A1A1A] text-2xl">{room.temperature}°C</p>
+                                <p className="text-[#FF8F00] mb-1">Aération nécessaire</p>
+                                <p className="text-[#5F6368] text-sm">
+                                    Le niveau de CO₂ est élevé ({room.co2} ppm). Il est recommandé d&apos;aérer la pièce.
+                                </p>
                             </div>
                         </div>
-                        <div className="h-16 min-h-16">
-                            <ResponsiveContainer width="100%" height={64}>
-                                <LineChart data={tempData.slice(-10)}>
-                                    <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} dot={false} />
+                    )}
+
+                    {/* Metrics Overview */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                        {/* Temperature */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                    <Thermometer className="w-6 h-6 text-[#0092bd]" />
+                                </div>
+                                <div>
+                                    <p className="text-[#5F6368]">Température</p>
+                                    <p className="text-[#1A1A1A] text-2xl">{room.temperature}°C</p>
+                                </div>
+                            </div>
+                            <div className="h-16 min-h-16">
+                                <ResponsiveContainer width="100%" height={64}>
+                                    <LineChart data={tempData.slice(-10)}>
+                                        <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} dot={false} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* Humidity */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                    <Droplets className="w-6 h-6 text-[#0092bd]" />
+                                </div>
+                                <div>
+                                    <p className="text-[#5F6368]">Humidité</p>
+                                    <p className="text-[#1A1A1A] text-2xl">{room.humidity}%</p>
+                                </div>
+                            </div>
+                            <div className="pt-4">
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div
+                                        className="bg-[#0092bd] h-2 rounded-full transition-all duration-300"
+                                        style={{ width: `${room.humidity}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* CO2 */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                    <Wind className="w-6 h-6 text-[#0092bd]" />
+                                </div>
+                                <div>
+                                    <p className="text-[#5F6368]">CO₂</p>
+                                    <p className="text-[#1A1A1A] text-2xl">{room.co2} ppm</p>
+                                </div>
+                            </div>
+                            <div className="h-16 min-h-16">
+                                <ResponsiveContainer width="100%" height={64}>
+                                    <LineChart data={co2Data.slice(-10)}>
+                                        <Line
+                                            type="monotone"
+                                            dataKey="value"
+                                            stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"}
+                                            strokeWidth={2}
+                                            dot={false}
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* Brightness */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                    <Sun className="w-6 h-6 text-[#0092bd]" />
+                                </div>
+                                <div>
+                                    <p className="text-[#5F6368]">Luminosité</p>
+                                    <p className="text-[#1A1A1A] text-2xl">{room.brightness} lux</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Noise */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                    <Volume2 className="w-6 h-6 text-[#0092bd]" />
+                                </div>
+                                <div>
+                                    <p className="text-[#5F6368]">Niveau sonore</p>
+                                    <p className="text-[#1A1A1A] text-2xl">{room.noise} dB</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Comfort Index */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div className="flex items-center gap-3">
+                                <div className={`${comfortIndex.color} rounded-lg p-3`}>
+                                    <AlertCircle className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <p className="text-[#5F6368]">Indice de confort</p>
+                                    <p className="text-[#1A1A1A] text-2xl">{comfortIndex.label}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Historical Charts */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Temperature Chart */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 className="text-[#1A1A1A] mb-4">Évolution de la température</h3>
+                            <ResponsiveContainer width="100%" height={200}>
+                                <LineChart data={tempData}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                                    <XAxis dataKey="time" stroke="#5F6368" />
+                                    <YAxis stroke="#5F6368" />
+                                    <Tooltip />
+                                    <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
-                    </div>
 
-                    {/* Humidity */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                <Droplets className="w-6 h-6 text-[#0092bd]" />
-                            </div>
-                            <div>
-                                <p className="text-[#5F6368]">Humidité</p>
-                                <p className="text-[#1A1A1A] text-2xl">{room.humidity}%</p>
-                            </div>
-                        </div>
-                        <div className="pt-4">
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                    className="bg-[#0092bd] h-2 rounded-full transition-all duration-300"
-                                    style={{ width: `${room.humidity}%` }}
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* CO2 */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                <Wind className="w-6 h-6 text-[#0092bd]" />
-                            </div>
-                            <div>
-                                <p className="text-[#5F6368]">CO₂</p>
-                                <p className="text-[#1A1A1A] text-2xl">{room.co2} ppm</p>
-                            </div>
-                        </div>
-                        <div className="h-16 min-h-16">
-                            <ResponsiveContainer width="100%" height={64}>
-                                <LineChart data={co2Data.slice(-10)}>
+                        {/* CO2 Chart */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 className="text-[#1A1A1A] mb-4">Évolution du CO₂</h3>
+                            <ResponsiveContainer width="100%" height={200}>
+                                <LineChart data={co2Data}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                                    <XAxis dataKey="time" stroke="#5F6368" />
+                                    <YAxis stroke="#5F6368" />
+                                    <Tooltip />
                                     <Line
                                         type="monotone"
                                         dataKey="value"
                                         stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"}
                                         strokeWidth={2}
-                                        dot={false}
                                     />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
 
-                    {/* Brightness */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                <Sun className="w-6 h-6 text-[#0092bd]" />
-                            </div>
-                            <div>
-                                <p className="text-[#5F6368]">Luminosité</p>
-                                <p className="text-[#1A1A1A] text-2xl">{room.brightness} lux</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Noise */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                <Volume2 className="w-6 h-6 text-[#0092bd]" />
-                            </div>
-                            <div>
-                                <p className="text-[#5F6368]">Niveau sonore</p>
-                                <p className="text-[#1A1A1A] text-2xl">{room.noise} dB</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Comfort Index */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <div className="flex items-center gap-3">
-                            <div className={`${comfortIndex.color} rounded-lg p-3`}>
-                                <AlertCircle className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                                <p className="text-[#5F6368]">Indice de confort</p>
-                                <p className="text-[#1A1A1A] text-2xl">{comfortIndex.label}</p>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Reservation Modal */}
+                    <ReservationModal
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                        roomName={room.name}
+                        onReserve={handleReservation}
+                    />
                 </div>
-
-                {/* Historical Charts */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Temperature Chart */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <h3 className="text-[#1A1A1A] mb-4">Évolution de la température</h3>
-                        <ResponsiveContainer width="100%" height={200}>
-                            <LineChart data={tempData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                                <XAxis dataKey="time" stroke="#5F6368" />
-                                <YAxis stroke="#5F6368" />
-                                <Tooltip />
-                                <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-
-                    {/* CO2 Chart */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                        <h3 className="text-[#1A1A1A] mb-4">Évolution du CO₂</h3>
-                        <ResponsiveContainer width="100%" height={200}>
-                            <LineChart data={co2Data}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                                <XAxis dataKey="time" stroke="#5F6368" />
-                                <YAxis stroke="#5F6368" />
-                                <Tooltip />
-                                <Line
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"}
-                                    strokeWidth={2}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-
-                {/* Reservation Modal */}
-                <ReservationModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    roomName={room.name}
-                    onReserve={handleReservation}
-                />
             </div>
-        </div>
+        </>
     );
 }
