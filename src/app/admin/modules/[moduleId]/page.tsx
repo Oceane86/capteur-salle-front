@@ -33,7 +33,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { fetchModuleById, fetchRooms } from "@/lib/api";
+import { fetchModuleById, fetchRooms, createModule } from "@/lib/api";
 
 // Génération de données fictives historiques si nécessaire
 const generateHistoricalData = (currentValue: number) => {
@@ -41,7 +41,10 @@ const generateHistoricalData = (currentValue: number) => {
   const now = new Date();
   for (let i = 10; i >= 0; i--) {
     data.push({
-      time: new Date(now.getTime() - i * 60 * 1000).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+      time: new Date(now.getTime() - i * 60 * 1000).toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       value: currentValue + Math.floor(Math.random() * 5 - 2),
     });
   }
@@ -69,6 +72,7 @@ export default function AdminModuleDetailPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showPowerModal, setShowPowerModal] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const onLogout = () => {
     localStorage.removeItem("role");
@@ -124,19 +128,36 @@ export default function AdminModuleDetailPage() {
     );
   }
 
-  const room = rooms.find((r) => r.id === config.roomId);
+  const room = rooms.find((r) => r.id === config.roomId || r._id === config.roomId);
 
   const tempData = generateHistoricalData(room?.temperature || 22);
   const co2Data = generateHistoricalData(room?.co2 || 400);
 
-  const handleSave = () => {
-    notify("Configuration enregistrée avec succès !", "success");
+  const handleSave = async () => {
+    if (!config.name || !config.roomId) {
+      notify("Veuillez remplir tous les champs obligatoires.", "error");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      await createModule({
+        hardwareId: module.id,
+        name: config.name,
+        roomId: config.roomId,
+      });
+      notify("Configuration du module mise à jour avec succès !", "success");
+      // Mettre à jour localement le module
+      setModule({ ...module, name: config.name, room: rooms.find(r => r.id === config.roomId || r._id === config.roomId) });
+    } catch (err: any) {
+      console.error(err);
+      notify(err?.response?.data?.error || "Erreur lors de la mise à jour du module.", "error");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleFirmwareUpdate = () => {
-    notify("Mise à jour du firmware lancée...", "success");
-  };
-
+  const handleFirmwareUpdate = () => notify("Mise à jour du firmware lancée...", "success");
   const handlePowerToggle = () => setShowPowerModal(true);
   const handleSync = () => setShowSyncModal(true);
 
@@ -232,7 +253,7 @@ export default function AdminModuleDetailPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
                       aria-required="true"
                     >
-                      {rooms.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+                      {rooms.map((r) => <option key={r.id || r._id} value={r.id || r._id}>{r.name}</option>)}
                     </select>
                   </div>
 
@@ -256,10 +277,11 @@ export default function AdminModuleDetailPage() {
 
                   <button
                     onClick={handleSave}
+                    disabled={saving}
                     className="w-full bg-[#0092bd] text-white py-3 rounded-lg hover:bg-[#007a9d] transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Save className="w-5 h-5" aria-hidden="true" />
-                    <span>Enregistrer la configuration</span>
+                    <span>{saving ? "Enregistrement..." : "Enregistrer la configuration"}</span>
                   </button>
                 </div>
               </section>
@@ -408,44 +430,44 @@ export default function AdminModuleDetailPage() {
               </section>
             </aside>
           </div>
+
+          {/* Modals */}
+          <ConfirmModal
+            isOpen={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            onConfirm={confirmDelete}
+            icon={<Trash2 className="w-8 h-8 text-[#D50000]" />}
+            iconBgColor="bg-[#FEE2E2]"
+            message={`Êtes-vous sûr de vouloir supprimer le module <strong>${module.name}</strong> ?`}
+            confirmText="Supprimer"
+            confirmButtonColor="bg-[#D50000]"
+            confirmButtonHoverColor="hover:bg-[#B71C1C]"
+          />
+
+          <ConfirmModal
+            isOpen={showPowerModal}
+            onClose={() => setShowPowerModal(false)}
+            onConfirm={confirmPowerToggle}
+            icon={<Power className="w-8 h-8 text-[#D50000]" />}
+            iconBgColor="bg-[#FEE2E2]"
+            message={`Êtes-vous sûr de vouloir ${module.enabled ? "éteindre" : "allumer"} le module <strong>${module.name}</strong> ?`}
+            confirmText={module.enabled ? "Éteindre" : "Allumer"}
+            confirmButtonColor="bg-[#D50000]"
+            confirmButtonHoverColor="hover:bg-[#B71C1C]"
+          />
+
+          <ConfirmModal
+            isOpen={showSyncModal}
+            onClose={() => setShowSyncModal(false)}
+            onConfirm={confirmSync}
+            icon={<RefreshCw className="w-8 h-8 text-[#0092bd]" />}
+            iconBgColor="bg-[#E3F2FD]"
+            message={`Êtes-vous sûr de vouloir forcer la synchronisation du module <strong>${module.name}</strong> ?`}
+            confirmText="Synchroniser"
+            confirmButtonColor="bg-[#0092bd]"
+            confirmButtonHoverColor="hover:bg-[#007a9d]"
+          />
         </div>
-
-        {/* Modals */}
-        <ConfirmModal
-          isOpen={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={confirmDelete}
-          icon={<Trash2 className="w-8 h-8 text-[#D50000]" />}
-          iconBgColor="bg-[#FEE2E2]"
-          message={`Êtes-vous sûr de vouloir supprimer le module <strong>${module.name}</strong> ?`}
-          confirmText="Supprimer"
-          confirmButtonColor="bg-[#D50000]"
-          confirmButtonHoverColor="hover:bg-[#B71C1C]"
-        />
-
-        <ConfirmModal
-          isOpen={showPowerModal}
-          onClose={() => setShowPowerModal(false)}
-          onConfirm={confirmPowerToggle}
-          icon={<Power className="w-8 h-8 text-[#D50000]" />}
-          iconBgColor="bg-[#FEE2E2]"
-          message={`Êtes-vous sûr de vouloir ${module.enabled ? "éteindre" : "allumer"} le module <strong>${module.name}</strong> ?`}
-          confirmText={module.enabled ? "Éteindre" : "Allumer"}
-          confirmButtonColor="bg-[#D50000]"
-          confirmButtonHoverColor="hover:bg-[#B71C1C]"
-        />
-
-        <ConfirmModal
-          isOpen={showSyncModal}
-          onClose={() => setShowSyncModal(false)}
-          onConfirm={confirmSync}
-          icon={<RefreshCw className="w-8 h-8 text-[#0092bd]" />}
-          iconBgColor="bg-[#E3F2FD]"
-          message={`Êtes-vous sûr de vouloir forcer la synchronisation du module <strong>${module.name}</strong> ?`}
-          confirmText="Synchroniser"
-          confirmButtonColor="bg-[#0092bd]"
-          confirmButtonHoverColor="hover:bg-[#007a9d]"
-        />
       </div>
     </>
   );
