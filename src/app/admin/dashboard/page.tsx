@@ -48,7 +48,7 @@ export default function AdminDashboard() {
           temperature: r.lastMeasurement?.temperature ?? 0,
           co2: r.lastMeasurement?.co2 ?? 0,
           moduleId: r.moduleId ?? "",
-          needsAiring: r.lastMeasurement?.co2 > 800 ?? false,
+          needsAiring: r.lastMeasurement?.co2 !== undefined ? r.lastMeasurement.co2 > 800 : false,
         }));
 
         setRooms(enrichedRooms);
