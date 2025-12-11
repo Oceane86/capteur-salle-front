@@ -78,6 +78,7 @@ export default function AdminDashboard() {
 
   const onlineModules = modules.filter((m) => m.status === "online").length;
   const offlineModules = modules.filter((m) => m.status === "offline").length;
+  const latestAlerts = rooms.filter((r) => r.needsAiring);
 
   return (
     <>
@@ -219,7 +220,31 @@ export default function AdminDashboard() {
                 {/* Recent Alerts Placeholder */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6" role="region" aria-labelledby="alerts-header">
                   <h3 id="alerts-header" className="text-[#1A1A1A] mb-6">Dernières alertes</h3>
-                  <p className="text-[#5F6368]">Aucune alerte pour l'instant</p>
+                  <div className="space-y-4">
+                    {latestAlerts.length > 0 ? (
+                      latestAlerts.map((room) => (
+                        <div
+                          key={room._id}
+                          className="border-l-4 border-[#FF8F00] bg-[#FFF3E0] rounded-r-lg p-4"
+                        >
+                          <div className="flex items-start gap-3">
+                            <AlertTriangle className="w-5 h-5 text-[#FF8F00] shrink-0 mt-0.5" aria-hidden="true" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[#1A1A1A] mb-1 font-medium">{room.name}</p>
+                              <p className="text-[#5F6368] text-sm break-words">
+                                Nécessite une aération (CO₂: {room.co2} ppm)
+                              </p>
+                              <p className="text-[#5F6368] text-xs mt-2">
+                                {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-[#5F6368]">Aucune alerte pour l'instant</p>
+                    )}
+                  </div>
                 </div>
               </section>
             </>
