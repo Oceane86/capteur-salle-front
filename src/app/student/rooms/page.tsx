@@ -37,34 +37,39 @@ export default function RoomsList() {
     <>
       <title>Dashboard Étudiants | Digital Campus</title>
       <meta name="description" content="Vue d'ensemble du campus" />
-      
-      <div className="min-h-screen bg-platinium">
+
+      <main className="min-h-screen bg-platinium" role="main">
         <Navbar role="student" onLogout={handleLogout} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
-          <div className="mb-8">
+          <header className="mb-8">
             <h1 className="text-[#1A1A1A] mb-2">Salles disponibles</h1>
             <p className="text-[#5F6368]">Consultez l&apos;état en temps réel de toutes les salles du campus</p>
-          </div>
+          </header>
 
           {/* Search & Filters */}
-          <div className="mb-6 flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+          <section aria-labelledby="room-filters" className="mb-6 flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+            <h2 id="room-filters" className="sr-only">Filtres des salles</h2>
+
             <div className="relative w-full lg:max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5F6368]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5F6368]" aria-hidden="true" />
               <input
                 type="text"
                 placeholder="Rechercher une salle..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
+                aria-label="Rechercher une salle"
               />
             </div>
 
-            <div className="hidden lg:block w-px h-10 bg-gray-300"></div>
+            <div className="hidden lg:block w-px h-10 bg-gray-300" aria-hidden="true"></div>
 
             <div className="flex flex-wrap gap-3 w-full lg:w-auto lg:flex-1 items-center">
+              <label className="sr-only" htmlFor="statusFilter">Filtrer par statut</label>
               <select
+                id="statusFilter"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
                 className="flex-1 lg:flex-none lg:min-w-[160px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent text-[#1A1A1A]"
@@ -74,7 +79,9 @@ export default function RoomsList() {
                 <option value="occupied">Occupées</option>
               </select>
 
+              <label className="sr-only" htmlFor="floorFilter">Filtrer par étage</label>
               <select
+                id="floorFilter"
                 value={floorFilter}
                 onChange={(e) => setFloorFilter(e.target.value as any)}
                 className="flex-1 lg:flex-none lg:min-w-[140px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent text-[#1A1A1A]"
@@ -86,7 +93,9 @@ export default function RoomsList() {
                 <option value="4">Étage 4</option>
               </select>
 
+              <label className="sr-only" htmlFor="co2Filter">Filtrer par niveau de CO₂</label>
               <select
+                id="co2Filter"
                 value={co2Filter}
                 onChange={(e) => setCo2Filter(e.target.value as any)}
                 className="flex-1 lg:flex-none lg:min-w-[160px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent text-[#1A1A1A]"
@@ -98,7 +107,7 @@ export default function RoomsList() {
 
               {(statusFilter !== "all" || floorFilter !== "all" || co2Filter !== "all") && (
                 <>
-                  <div className="hidden lg:block w-px h-10 bg-gray-300"></div>
+                  <div className="hidden lg:block w-px h-10 bg-gray-300" aria-hidden="true"></div>
                   <button
                     onClick={() => {
                       setStatusFilter("all");
@@ -106,32 +115,37 @@ export default function RoomsList() {
                       setCo2Filter("all");
                     }}
                     className="px-4 py-2 border-2 border-gray-300 text-[#5F6368] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                    aria-label="Réinitialiser les filtres"
                   >
                     Réinitialiser
                   </button>
                 </>
               )}
             </div>
-          </div>
+          </section>
 
           {/* Rooms Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredRooms.map((room) => (
-              <RoomCard
-                key={room.id}
-                room={room}
-                onClick={() => router.push(`/student/room/${room.id}`)}
-              />
-            ))}
-          </div>
+          <section aria-labelledby="rooms-list">
+            <h2 id="rooms-list" className="sr-only">Liste des salles</h2>
 
-          {filteredRooms.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-[#5F6368]">Aucune salle trouvée</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredRooms.map((room) => (
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  onClick={() => router.push(`/student/room/${room.id}`)}
+                />
+              ))}
             </div>
-          )}
+
+            {filteredRooms.length === 0 && (
+              <div className="text-center py-12" role="status" aria-live="polite">
+                <p className="text-[#5F6368]">Aucune salle trouvée</p>
+              </div>
+            )}
+          </section>
         </div>
-      </div>
+      </main>
     </>
   );
 }
