@@ -11,31 +11,31 @@ export default function StatusBadge({ status, size = 'md' }: StatusBadgeProps) {
       case 'available':
         return {
           label: 'Disponible',
-          bg: 'bg-jade-green',
+          bg: 'bg-[#00C853]',
           text: 'text-white'
         };
       case 'occupied':
         return {
           label: 'Occupée',
-          bg: 'bg-brick-ember',
+          bg: 'bg-[#D50000]',
           text: 'text-white'
         };
       case 'needsAiring':
         return {
           label: 'À aérer',
-          bg: 'bg-deep-saffron',
+          bg: 'bg-[#FF8F00]',
           text: 'text-white'
         };
       case 'online':
         return {
           label: 'En ligne',
-          bg: 'bg-jade-green',
+          bg: 'bg-[#00C853]',
           text: 'text-white'
         };
       case 'offline':
         return {
           label: 'Hors ligne',
-          bg: 'bg-cool-steel',
+          bg: 'bg-[#9E9E9E]',
           text: 'text-white'
         };
     }

@@ -57,12 +57,12 @@ export default function ReservationModal({ isOpen, roomName, onClose, onReserve 
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-carbon-black">Réserver {roomName}</h2>
+          <h2 className="text-[#1A1A1A]">Réserver {roomName}</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5 text-dim-gray" />
+            <X className="w-5 h-5 text-[#5F6368]" />
           </button>
         </div>
 
@@ -70,7 +70,7 @@ export default function ReservationModal({ isOpen, roomName, onClose, onReserve 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Start Time */}
           <div>
-            <label className="block text-dim-gray mb-2">
+            <label className="block text-[#5F6368] mb-2">
               <Clock className="w-4 h-4 inline mr-2" />
               Heure de début
             </label>
@@ -80,15 +80,15 @@ export default function ReservationModal({ isOpen, roomName, onClose, onReserve 
               onChange={(e) => setStartTime(e.target.value)}
               min="09:00"
               max="21:00"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd]"
               required
             />
-            <p className="text-dim-gray text-sm mt-1">L&apos;école est ouverte de 9h à 21h</p>
+            <p className="text-[#5F6368] text-sm mt-1">L&apos;école est ouverte de 9h à 21h</p>
           </div>
 
           {/* End Time */}
           <div>
-            <label className="block text-dim-gray mb-2">
+            <label className="block text-[#5F6368] mb-2">
               <Clock className="w-4 h-4 inline mr-2" />
               Heure de fin
             </label>
@@ -98,21 +98,21 @@ export default function ReservationModal({ isOpen, roomName, onClose, onReserve 
               onChange={(e) => setEndTime(e.target.value)}
               min="09:00"
               max="21:00"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd]"
               required
             />
           </div>
 
           {/* Reason */}
           <div>
-            <label className="block text-dim-gray mb-2">
+            <label className="block text-[#5F6368] mb-2">
               <Calendar className="w-4 h-4 inline mr-2" />
               Motif
             </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd]"
               required
             >
               <option value="">Sélectionnez un motif</option>
@@ -129,14 +129,14 @@ export default function ReservationModal({ isOpen, roomName, onClose, onReserve 
           {/* Custom Reason */}
           {reason === 'Autre' && (
             <div>
-              <label className="block text-dim-gray mb-2">
+              <label className="block text-[#5F6368] mb-2">
                 Motif personnalisé
               </label>
               <input
                 type="text"
                 value={customReason}
                 onChange={(e) => setCustomReason(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd]"
                 required
               />
             </div>
@@ -150,13 +150,13 @@ export default function ReservationModal({ isOpen, roomName, onClose, onReserve 
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-dim-gray rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+              className="flex-1 px-4 py-2 border border-gray-300 text-[#5F6368] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
             >
               Annuler
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-bondi-blue text-white rounded-lg hover:bg-cerulean transition-colors cursor-pointer"
+              className="flex-1 px-4 py-2 bg-[#0092bd] text-white rounded-lg hover:bg-[#007a9d] transition-colors cursor-pointer"
             >
               Confirmer
             </button>

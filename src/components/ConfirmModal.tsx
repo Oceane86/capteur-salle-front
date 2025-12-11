@@ -33,11 +33,11 @@ export default function ConfirmModal({
           <div className={`w-16 h-16 ${iconBgColor} rounded-full flex items-center justify-center mx-auto mb-4`}>
             {icon}
           </div>
-          <p className="text-dim-gray mb-6" dangerouslySetInnerHTML={{ __html: message }} />
+          <p className="text-[#5F6368] mb-6" dangerouslySetInnerHTML={{ __html: message }} />
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={onClose}
-              className="flex-1 bg-platinium text-dim-gray px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
+              className="flex-1 bg-[#F5F7FA] text-[#5F6368] px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
             >
               Annuler
             </button>

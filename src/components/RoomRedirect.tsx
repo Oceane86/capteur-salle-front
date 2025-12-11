@@ -1,49 +1,40 @@
 // src/components/RoomRedirect.tsx
-import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { mockRooms } from '../data/mockData';
+"use client";
 
-interface RoomRedirectProps {
-  isAuthenticated: boolean;
-  userRole: 'student' | 'admin' | null;
-  onSetRedirect: (path: string) => void;
-}
+import { useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { mockRooms } from "@/data/mockData";
 
-export default function RoomRedirect({ isAuthenticated, userRole, onSetRedirect }: RoomRedirectProps) {
-  const { roomId } = useParams<{ roomId: string }>();
-  const navigate = useNavigate();
+export default function RoomRedirect() {
+  const router = useRouter();
+  const params = useParams();
+  const roomId = params?.roomId as string | undefined;
 
   useEffect(() => {
     if (!roomId) {
-      navigate('/login');
+      router.push("/login");
       return;
     }
 
-    // Vérifier que la salle existe
-    const room = mockRooms.find(r => r.id === roomId);
+    const room = mockRooms.find((r) => r.id === roomId);
     if (!room) {
-      navigate('/login');
+      router.push("/login");
       return;
     }
 
-    if (!isAuthenticated) {
-      // Stocker le chemin pour redirection après connexion
-      onSetRedirect(`/room/${roomId}`);
-      navigate('/login');
-    } else {
-      // Rediriger selon le rôle
-      if (userRole === 'admin') {
-        // Admin → configuration du module
-        navigate(`/admin/modules/${room.moduleId}`);
-      } else if (userRole === 'student') {
-        // Étudiant → détails de la salle
-        navigate(`/student/room/${roomId}`);
-      }
+    const role = localStorage.getItem("role");
+
+    if (!role) {
+      router.push("/login");
+      return;
     }
-  }, [roomId, isAuthenticated, userRole, navigate, onSetRedirect]);
+
+    if (role === "admin") router.push(`/admin/modules/${room.moduleId}`);
+    if (role === "student") router.push(`/student/room/${roomId}`);
+  }, [roomId, router]);
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-[#F5F7FA]">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0092bd] mx-auto"></div>
         <p className="mt-4 text-[#5F6368]">Redirection en cours...</p>

@@ -1,4 +1,6 @@
 // src/components/Navbar.tsx
+"use client";
+
 import {
   Home,
   Building2,
@@ -7,7 +9,8 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 interface NavbarProps {
@@ -15,15 +18,12 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
-export default function Navbar({
-  role,
-  onLogout,
-}: NavbarProps) {
-  const location = useLocation();
+export default function Navbar({ role, onLogout }: NavbarProps) {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const adminLinks = [
-    { to: "/admin", icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/admin/modules", icon: Building2, label: "Modules" },
   ];
 
@@ -37,10 +37,10 @@ export default function Navbar({
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link
-              to={role === "admin" ? "/admin" : "/student"}
+              href={role === "admin" ? "/admin/dashboard" : "/student/dashboard"}
               className="flex items-center gap-2"
             >
-              <div className="bg-bondi-blue rounded-lg p-2">
+              <div className="bg-[#0092bd] rounded-lg p-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   id="Calque_2"
@@ -56,7 +56,7 @@ export default function Navbar({
                   </g>
                 </svg>
               </div>
-              <span className="text-carbon-black hidden sm:block">
+              <span className="text-[#1A1A1A] hidden sm:block">
                 Digital Campus
               </span>
             </Link>
@@ -65,15 +65,15 @@ export default function Navbar({
             <div className="hidden md:flex items-center gap-6">
               {links.map((link, index) => {
                 const Icon = link.icon;
-                const isActive = location.pathname === link.to;
+                const isActive = pathname === link.to;
                 return (
                   <Link
                     key={`${link.to}-${index}`}
-                    to={link.to}
+                    href={link.to}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                       isActive
-                        ? "bg-bondi-blue text-white"
-                        : "text-dim-gray hover:bg-gray-100"
+                        ? "bg-[#0092bd] text-white"
+                        : "text-[#5F6368] hover:bg-gray-100"
                     }`}
                   >
                     <Icon className="w-5 h-5" />
@@ -83,7 +83,7 @@ export default function Navbar({
               })}
               <button
                 onClick={onLogout}
-                className="flex items-center gap-2 px-3 py-2 text-brick-ember hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-3 py-2 text-[#D50000] hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
               >
                 <LogOut className="w-5 h-5" />
                 <span>Déconnexion</span>
@@ -93,7 +93,7 @@ export default function Navbar({
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-dim-gray hover:bg-gray-100 rounded-lg cursor-pointer"
+              className="md:hidden p-2 text-[#5F6368] hover:bg-gray-100 rounded-lg cursor-pointer"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -111,16 +111,16 @@ export default function Navbar({
           <div className="px-4 py-3 space-y-2">
             {links.map((link, index) => {
               const Icon = link.icon;
-              const isActive = location.pathname === link.to;
+              const isActive = pathname === link.to;
               return (
                 <Link
                   key={`${link.to}-${index}`}
-                  to={link.to}
+                  href={link.to}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive
-                      ? "bg-bondi-blue text-white"
-                      : "text-dim-gray hover:bg-gray-100"
+                      ? "bg-[#0092bd] text-white"
+                      : "text-[#5F6368] hover:bg-gray-100"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -133,7 +133,7 @@ export default function Navbar({
                 setMobileMenuOpen(false);
                 onLogout();
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-brick-ember hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+              className="w-full flex items-center gap-3 px-4 py-3 text-[#D50000] hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
             >
               <LogOut className="w-5 h-5" />
               <span>Déconnexion</span>

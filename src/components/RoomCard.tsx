@@ -16,10 +16,10 @@ export default function RoomCard({ room, onClick }: RoomCardProps) {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-carbon-black">{room.name}</h3>
+        <h3 className="text-[#1A1A1A]">{room.name}</h3>
         <div className="flex items-center gap-2">
           {room.needsAiring && (
-            <AlertTriangle className="w-5 h-5 text-deep-saffron" />
+            <AlertTriangle className="w-5 h-5 text-[#FF8F00]" />
           )}
           <StatusBadge status={room.status} size="sm" />
         </div>
@@ -29,54 +29,54 @@ export default function RoomCard({ room, onClick }: RoomCardProps) {
       <div className="grid grid-cols-2 gap-4">
         {/* Temperature */}
         <div className="flex items-center gap-2">
-          <div className="bg-platinium rounded-lg p-2">
-            <Thermometer className="w-4 h-4 text-bondi-blue" />
+          <div className="bg-[#F5F7FA] rounded-lg p-2">
+            <Thermometer className="w-4 h-4 text-[#0092bd]" />
           </div>
           <div>
-            <p className="text-dim-gray text-xs">Température</p>
-            <p className="text-carbon-black">{room.temperature}°C</p>
+            <p className="text-[#5F6368] text-xs">Température</p>
+            <p className="text-[#1A1A1A]">{room.temperature}°C</p>
           </div>
         </div>
 
         {/* Humidity */}
         <div className="flex items-center gap-2">
-          <div className="bg-platinium rounded-lg p-2">
-            <Droplets className="w-4 h-4 text-bondi-blue" />
+          <div className="bg-[#F5F7FA] rounded-lg p-2">
+            <Droplets className="w-4 h-4 text-[#0092bd]" />
           </div>
           <div>
-            <p className="text-dim-gray text-xs">Humidité</p>
-            <p className="text-carbon-black">{room.humidity}%</p>
+            <p className="text-[#5F6368] text-xs">Humidité</p>
+            <p className="text-[#1A1A1A]">{room.humidity}%</p>
           </div>
         </div>
 
         {/* CO2 */}
         <div className="flex items-center gap-2">
-          <div className="bg-platinium rounded-lg p-2">
-            <Wind className="w-4 h-4 text-bondi-blue" />
+          <div className="bg-[#F5F7FA] rounded-lg p-2">
+            <Wind className="w-4 h-4 text-[#0092bd]" />
           </div>
           <div>
-            <p className="text-dim-gray text-xs">CO₂</p>
-            <p className="text-carbon-black">{room.co2} ppm</p>
+            <p className="text-[#5F6368] text-xs">CO₂</p>
+            <p className="text-[#1A1A1A]">{room.co2} ppm</p>
           </div>
         </div>
 
         {/* Brightness */}
         <div className="flex items-center gap-2">
-          <div className="bg-platinium rounded-lg p-2">
-            <Sun className="w-4 h-4 text-bondi-blue" />
+          <div className="bg-[#F5F7FA] rounded-lg p-2">
+            <Sun className="w-4 h-4 text-[#0092bd]" />
           </div>
           <div>
-            <p className="text-dim-gray text-xs">Luminosité</p>
-            <p className="text-carbon-black">{room.brightness} lux</p>
+            <p className="text-[#5F6368] text-xs">Luminosité</p>
+            <p className="text-[#1A1A1A]">{room.brightness} lux</p>
           </div>
         </div>
       </div>
 
       {/* Warning for high CO2 */}
       {room.needsAiring && (
-        <div className="mt-4 bg-old-lace border border-deep-saffron rounded-lg p-3 flex items-start gap-2">
-          <Wind className="w-4 h-4 text-deep-saffron mt-0.5 flex-shrink-0" />
-          <p className="text-deep-saffron text-sm">
+        <div className="mt-4 bg-[#FFF3E0] border border-[#FF8F00] rounded-lg p-3 flex items-start gap-2">
+          <Wind className="w-4 h-4 text-[#FF8F00] mt-0.5 flex-shrink-0" />
+          <p className="text-[#FF8F00] text-sm">
             Niveau de CO₂ élevé. Aération recommandée.
           </p>
         </div>
