@@ -7,6 +7,7 @@ import { ArrowLeft, Thermometer, Droplets, Wind, Sun, Volume2, AlertCircle, Cale
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ReservationModal from "@/components/ReservationModal";
+import { useToast } from "@/components/Toast";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { fetchRoomById, createReservation } from "@/lib/api";
 
@@ -19,6 +20,8 @@ export default function RoomDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const { notify } = useToast();
 
     const handleLogout = () => router.push("/login");
 
@@ -118,7 +121,7 @@ export default function RoomDetails() {
                     customReason = data.reason;
             }
 
-            // 🔹 Convertir les heures en dates complètes ISO
+            // Convertir les heures en dates complètes ISO
             const today = new Date();
             const [startHour, startMinute] = data.startTime.split(":").map(Number);
             const [endHour, endMinute] = data.endTime.split(":").map(Number);
@@ -130,11 +133,11 @@ export default function RoomDetails() {
             await createReservation(room.id, startDate.toISOString(), endDate.toISOString(), reasonType, customReason);
 
             setIsModalOpen(false);
-            alert('Réservation effectuée avec succès !');
+            notify("Réservation effectuée avec succès !", "success");
 
         } catch (err: any) {
             console.error(err);
-            alert(err.response?.data?.message || 'Erreur lors de la réservation. Veuillez réessayer.');
+            notify(err.response?.data?.message || "Erreur lors de la réservation. Veuillez réessayer.", "error");
         }
     };
 
