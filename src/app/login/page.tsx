@@ -1,26 +1,29 @@
 // src/app/login/page.tsx
+"use client";
+
 import { useState } from "react";
-import { Building2, Lock, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Lock, User } from "lucide-react";
 
-interface LoginScreenProps {
-  onLogin: (username: string, password: string) => void;
-  onStudentAccess: () => void;
-}
-
-export default function LoginScreen({
-  onLogin,
-  onStudentAccess,
-}: LoginScreenProps) {
+export default function LoginScreen() {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(username, password);
+
+    if (username === "admin" && password === "admin") {
+      router.push("/admin/dashboard");
+    }
+  };
+
+  const handleStudentAccess = () => {
+    router.push("/student/rooms");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0092bd] to-[#1E88E5] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0092bd] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Logo */}
@@ -105,7 +108,7 @@ export default function LoginScreen({
               Vous êtes étudiant ?
             </p>
             <button
-              onClick={onStudentAccess}
+              onClick={handleStudentAccess}
               className="w-full border-2 border-[#0092bd] text-[#0092bd] py-3 rounded-lg hover:bg-[#0092bd] hover:text-white transition-all duration-200 cursor-pointer"
             >
               Accès sans authentification

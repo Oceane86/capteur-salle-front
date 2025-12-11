@@ -1,5 +1,4 @@
 // app/not-found.tsx
-import "@styles/NotFound.scss";
 
 const NotFound = () => {
   return (
