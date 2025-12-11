@@ -40,6 +40,10 @@ export const fetchModules = async () => {
   return res.data;
 };
 
-
+// GET : Module by ID
+export const fetchModuleById = async (moduleId: string) => {
+  const res = await api.get(`/api/modules/${moduleId}`);
+  return res.data;
+};
 
 export default api;

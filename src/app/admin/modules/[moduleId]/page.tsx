@@ -1,13 +1,12 @@
 // src/app/admin/modules/[moduleId]/page.tsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/Toast";
-import { mockModules, mockRooms, generateHistoricalData } from "@/data/mockData";
 import {
   ArrowLeft,
   Save,
@@ -34,45 +33,101 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { fetchModuleById, fetchRooms } from "@/lib/api";
+
+// Génération de données fictives historiques si nécessaire
+const generateHistoricalData = (currentValue: number) => {
+  const data = [];
+  const now = new Date();
+  for (let i = 10; i >= 0; i--) {
+    data.push({
+      time: new Date(now.getTime() - i * 60 * 1000).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+      value: currentValue + Math.floor(Math.random() * 5 - 2),
+    });
+  }
+  return data;
+};
 
 export default function AdminModuleDetailPage() {
   const router = useRouter();
   const params = useParams();
   const moduleId = params?.moduleId as string | undefined;
 
-  const onLogout = () => {
-    localStorage.removeItem("role");
-    router.push("/login");
-  };
+  const { notify } = useToast();
 
-  const module = useMemo(() => mockModules.find((m) => m.id === moduleId), [moduleId]);
-  const room = useMemo(() => (module ? mockRooms.find((r) => r.id === module.roomId) : null), [module]);
+  const [module, setModule] = useState<any | null>(null);
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [config, setConfig] = useState({
-    name: module?.name || "",
-    roomId: module?.roomId || "",
-    acquisitionInterval: module?.acquisitionInterval || 30,
+    name: "",
+    roomId: "",
+    acquisitionInterval: 30,
   });
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showPowerModal, setShowPowerModal] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
 
-  if (!module || !room) {
+  const onLogout = () => {
+    localStorage.removeItem("role");
+    router.push("/login");
+  };
+
+  // Charger le module et les salles
+  useEffect(() => {
+    const loadData = async () => {
+      if (!moduleId) return;
+
+      try {
+        setLoading(true);
+        const [moduleData, roomsData] = await Promise.all([
+          fetchModuleById(moduleId),
+          fetchRooms(),
+        ]);
+        setModule(moduleData);
+        setRooms(roomsData);
+
+        setConfig({
+          name: moduleData.name || "",
+          roomId: moduleData.room?.id || "",
+          acquisitionInterval: moduleData.acquisitionIntervalSec || 30,
+        });
+      } catch (err) {
+        console.error(err);
+        setError("Impossible de charger le module.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [moduleId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Chargement du module...</p>
+      </div>
+    );
+  }
+
+  if (error || !module) {
     return (
       <div className="min-h-screen bg-[#F5F7FA]">
         <Navbar role="admin" onLogout={onLogout} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-[#5F6368] text-center">Module non trouvé</p>
+          <p className="text-[#5F6368] text-center">{error || "Module non trouvé"}</p>
         </div>
       </div>
     );
   }
 
-  const tempData = generateHistoricalData(room.temperature);
-  const co2Data = generateHistoricalData(room.co2);
+  const room = rooms.find((r) => r.id === config.roomId);
 
-  const { notify } = useToast();
+  const tempData = generateHistoricalData(room?.temperature || 22);
+  const co2Data = generateHistoricalData(room?.co2 || 400);
 
   const handleSave = () => {
     notify("Configuration enregistrée avec succès !", "success");
@@ -97,7 +152,7 @@ export default function AdminModuleDetailPage() {
 
   const confirmPowerToggle = () => {
     setShowPowerModal(false);
-    notify(module.status === "online" ? "Module éteint" : "Module allumé", "success");
+    notify(module.enabled ? "Module éteint" : "Module allumé", "success");
   };
 
   const confirmSync = () => {
@@ -133,19 +188,19 @@ export default function AdminModuleDetailPage() {
                 <p className="text-[#5F6368]">ID: {module.id}</p>
               </div>
               <div className="flex items-center gap-3">
-                <StatusBadge status={module.status as any} size="lg" aria-hidden="true" />
+                <StatusBadge status={module.enabled ? "online" : "offline"} size="lg" aria-hidden="true" />
                 <button
                   onClick={handlePowerToggle}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors cursor-pointer ${module.status === "online" ? "bg-[#D50000] text-white hover:bg-[#B71C1C]" : "bg-[#00C853] text-white hover:bg-[#00A844]"}`}
-                  aria-label={module.status === "online" ? "Éteindre le module" : "Allumer le module"}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors cursor-pointer ${module.enabled ? "bg-[#D50000]" : "bg-[#00C853]"} text-white`}
                 >
                   <Power className="w-4 h-4" aria-hidden="true" />
-                  <span>{module.status === "online" ? "Éteindre" : "Allumer"}</span>
+                  <span>{module.enabled ? "Éteindre" : "Allumer"}</span>
                 </button>
               </div>
             </div>
           </section>
 
+          {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {/* Left/Main Content */}
@@ -175,10 +230,9 @@ export default function AdminModuleDetailPage() {
                       value={config.roomId}
                       onChange={(e) => setConfig({ ...config, roomId: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
-                      size={5}
                       aria-required="true"
                     >
-                      {mockRooms.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+                      {rooms.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
                     </select>
                   </div>
 
@@ -227,7 +281,6 @@ export default function AdminModuleDetailPage() {
                   onClick={handleFirmwareUpdate}
                   disabled={module.firmwareVersion === "2.3.1"}
                   className="w-full bg-[#00C853] text-white py-3 rounded-lg hover:bg-[#00A844] transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                  aria-disabled={module.firmwareVersion === "2.3.1"}
                 >
                   <Download className="w-5 h-5" aria-hidden="true" />
                   <span>{module.firmwareVersion === "2.3.1" ? "Firmware à jour" : "Mettre à jour (OTA)"}</span>
@@ -262,7 +315,7 @@ export default function AdminModuleDetailPage() {
                           <XAxis dataKey="time" stroke="#5F6368" />
                           <YAxis stroke="#5F6368" />
                           <Tooltip />
-                          <Line type="monotone" dataKey="value" stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"} strokeWidth={2} />
+                          <Line type="monotone" dataKey="value" stroke={room?.co2 > 1000 ? "#FF8F00" : "#0092bd"} strokeWidth={2} />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
@@ -273,15 +326,18 @@ export default function AdminModuleDetailPage() {
 
             {/* Right Sidebar */}
             <aside className="space-y-6" aria-label="Sidebar d'état du module et actions">
+              {/* État du module */}
               <section aria-labelledby="module-status" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h2 id="module-status" className="text-[#1A1A1A] mb-6">État du module</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Battery className={`w-5 h-5 ${module.batteryLevel > 50 ? "text-[#00C853]" : module.batteryLevel > 20 ? "text-[#FF8F00]" : "text-[#D50000]"}`} aria-hidden="true" />
+                      <Battery className={`w-5 h-5 ${module.batteryPercent > 50 ? "text-[#00C853]" : module.batteryPercent > 20 ? "text-[#FF8F00]" : "text-[#D50000]"}`} aria-hidden="true" />
                       <span className="text-[#5F6368]">Batterie</span>
                     </div>
-                    <span className={`${module.batteryLevel > 50 ? "text-[#00C853]" : module.batteryLevel > 20 ? "text-[#FF8F00]" : "text-[#D50000]"}`}>{module.batteryLevel}%</span>
+                    <span className={`${module.batteryPercent > 50 ? "text-[#00C853]" : module.batteryPercent > 20 ? "text-[#FF8F00]" : "text-[#D50000]"}`}>
+                      {module.batteryPercent ?? "N/A"}%
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -289,7 +345,7 @@ export default function AdminModuleDetailPage() {
                       <Clock className="w-5 h-5 text-[#5F6368]" aria-hidden="true" />
                       <span className="text-[#5F6368]">Dernière synchro</span>
                     </div>
-                    <span className="text-[#1A1A1A] text-sm">{new Date(module.lastSync).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
+                    <span className="text-[#1A1A1A] text-sm">{module.lastSeenAt ? new Date(module.lastSeenAt).toLocaleTimeString("fr-FR") : "N/A"}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -305,13 +361,13 @@ export default function AdminModuleDetailPage() {
                       <MapPin className="w-5 h-5 text-[#5F6368]" aria-hidden="true" />
                       <span className="text-[#5F6368]">Salle</span>
                     </div>
-                    <span className="text-[#1A1A1A]">{room.name}</span>
+                    <span className="text-[#1A1A1A]">{room?.name || "Non assignée"}</span>
                   </div>
                 </div>
 
                 <button
                   onClick={handleSync}
-                  className="w-full mt-6 border-2 border-[#0092bd] text-[#0092bd] py-2 rounded-lg hover:bg-[#0092bd] hover:text-white transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full mt-6 border-2 border-[#0092bd] text-[#0092bd] py-2 rounded-lg hover:bg-[#0092bd] hover:text-white flex items-center justify-center gap-2"
                   aria-label="Forcer la synchronisation du module"
                 >
                   <RefreshCw className="w-4 h-4" aria-hidden="true" />
@@ -361,7 +417,7 @@ export default function AdminModuleDetailPage() {
           onConfirm={confirmDelete}
           icon={<Trash2 className="w-8 h-8 text-[#D50000]" />}
           iconBgColor="bg-[#FEE2E2]"
-          message={`Êtes-vous sûr de vouloir supprimer le module <strong>${module.name}</strong> ?<br />Cette action est <strong>irréversible</strong> et entraînera la perte de toutes les données associées.`}
+          message={`Êtes-vous sûr de vouloir supprimer le module <strong>${module.name}</strong> ?`}
           confirmText="Supprimer"
           confirmButtonColor="bg-[#D50000]"
           confirmButtonHoverColor="hover:bg-[#B71C1C]"
@@ -373,8 +429,8 @@ export default function AdminModuleDetailPage() {
           onConfirm={confirmPowerToggle}
           icon={<Power className="w-8 h-8 text-[#D50000]" />}
           iconBgColor="bg-[#FEE2E2]"
-          message={`Êtes-vous sûr de vouloir ${module.status === "online" ? "éteindre" : "allumer"} le module <strong>${module.name}</strong> ?<br />Cette action peut affecter la collecte des données en temps réel.`}
-          confirmText={module.status === "online" ? "Éteindre" : "Allumer"}
+          message={`Êtes-vous sûr de vouloir ${module.enabled ? "éteindre" : "allumer"} le module <strong>${module.name}</strong> ?`}
+          confirmText={module.enabled ? "Éteindre" : "Allumer"}
           confirmButtonColor="bg-[#D50000]"
           confirmButtonHoverColor="hover:bg-[#B71C1C]"
         />
@@ -385,7 +441,7 @@ export default function AdminModuleDetailPage() {
           onConfirm={confirmSync}
           icon={<RefreshCw className="w-8 h-8 text-[#0092bd]" />}
           iconBgColor="bg-[#E3F2FD]"
-          message={`Êtes-vous sûr de vouloir forcer la synchronisation du module <strong>${module.name}</strong> ?<br />Cette action va actualiser immédiatement toutes les données du capteur.`}
+          message={`Êtes-vous sûr de vouloir forcer la synchronisation du module <strong>${module.name}</strong> ?`}
           confirmText="Synchroniser"
           confirmButtonColor="bg-[#0092bd]"
           confirmButtonHoverColor="hover:bg-[#007a9d]"
