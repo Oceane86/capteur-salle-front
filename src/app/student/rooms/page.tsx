@@ -4,12 +4,28 @@
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import RoomCard from "@/components/RoomCard";
-import { mockRooms } from "@/data/mockData";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchRooms } from "@/lib/api";
+
+type Room = {
+  id: string;
+  name: string;
+  floor: number;
+  occupied: boolean;
+  lastMeasurement?: {
+    co2: number;
+    temperature: number;
+    humidity: number;
+  } | null;
+};
 
 export default function RoomsList() {
   const router = useRouter();
+
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "available" | "occupied">("all");
@@ -20,15 +36,39 @@ export default function RoomsList() {
     router.push("/login");
   };
 
-  const filteredRooms = mockRooms.filter((room) => {
+  // 🔹 Récupération des salles depuis l'API
+  useEffect(() => {
+    const loadRooms = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchRooms();
+        setRooms(data);
+      } catch (err) {
+        console.error(err);
+        setError("Impossible de récupérer les salles.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRooms();
+  }, []);
+
+  // 🔹 Filtrage côté front
+  const filteredRooms = rooms.filter((room) => {
     const matchesSearch = room.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || room.status === statusFilter;
-    const roomFloor = room.name.split(".")[0].replace("Salle ", "");
+
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "available" && !room.occupied) ||
+      (statusFilter === "occupied" && room.occupied);
+
+    const roomFloor = room.floor.toString();
     const matchesFloor = floorFilter === "all" || roomFloor === floorFilter;
 
     let matchesCO2 = true;
-    if (co2Filter === "good") matchesCO2 = room.co2 <= 800;
-    else if (co2Filter === "warning") matchesCO2 = room.co2 > 800;
+    if (co2Filter === "good") matchesCO2 = room.lastMeasurement?.co2 !== undefined && room.lastMeasurement.co2 <= 800;
+    else if (co2Filter === "warning") matchesCO2 = room.lastMeasurement?.co2 !== undefined && room.lastMeasurement.co2 > 800;
 
     return matchesSearch && matchesStatus && matchesFloor && matchesCO2;
   });
@@ -128,17 +168,28 @@ export default function RoomsList() {
           <section aria-labelledby="rooms-list">
             <h2 id="rooms-list" className="sr-only">Liste des salles</h2>
 
+            {loading && <p role="status" aria-live="polite">Chargement des salles...</p>}
+            {error && <p role="alert">{error}</p>}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredRooms.map((room) => (
+              {!loading && !error && filteredRooms.map((room) => (
                 <RoomCard
                   key={room.id}
-                  room={room}
+                  room={{
+                    ...room,
+                    temperature: room.lastMeasurement?.temperature ?? 0,
+                    humidity: room.lastMeasurement?.humidity ?? 0,
+                    co2: room.lastMeasurement?.co2 ?? 0,
+                    brightness: 0, // si tu n'as pas encore la luminosité
+                    needsAiring: room.lastMeasurement?.co2 !== undefined && room.lastMeasurement.co2 > 800,
+                    status: room.occupied ? "occupied" : "available",
+                  }}
                   onClick={() => router.push(`/student/room/${room.id}`)}
                 />
               ))}
             </div>
 
-            {filteredRooms.length === 0 && (
+            {!loading && !error && filteredRooms.length === 0 && (
               <div className="text-center py-12" role="status" aria-live="polite">
                 <p className="text-[#5F6368]">Aucune salle trouvée</p>
               </div>

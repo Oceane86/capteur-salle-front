@@ -1,38 +1,78 @@
 // src/app/student/room/[roomId]/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { ArrowLeft, Thermometer, Droplets, Wind, Sun, Volume2, AlertCircle, Calendar, AlertTriangle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ReservationModal from "@/components/ReservationModal";
-import { mockRooms, generateHistoricalData } from "@/data/mockData";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { fetchRoomById } from "@/lib/api";
 
 export default function RoomDetails() {
     const router = useRouter();
     const pathname = usePathname();
-    const roomId = pathname.split("/").pop();
+    const roomId = pathname.split("/").pop() || "";
 
+    const [roomData, setRoomData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const room = mockRooms.find(r => r.id === roomId);
+    const handleLogout = () => router.push("/login");
 
-    const handleLogout = () => {
-        router.push("/login");
-    };
+    useEffect(() => {
+        const loadRoom = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchRoomById(roomId);
+                setRoomData(data);
+            } catch (err) {
+                console.error(err);
+                setError("Salle non trouvée.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadRoom();
+    }, [roomId]);
 
-    if (!room) {
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p>Chargement...</p>
+            </div>
+        );
+    }
+
+    if (error || !roomData?.room) {
         return (
             <div className="min-h-screen bg-[#F5F7FA]">
                 <Navbar role="student" onLogout={handleLogout} />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <p className="text-[#5F6368] text-center">Salle non trouvée</p>
+                    <p className="text-[#5F6368] text-center">{error || "Salle non trouvée"}</p>
+                    <button
+                        onClick={() => router.push("/student/rooms")}
+                        className="mt-4 px-4 py-2 bg-[#0092bd] text-white rounded-lg"
+                    >
+                        Retour aux salles
+                    </button>
                 </div>
             </div>
         );
     }
+
+    const room = {
+        ...roomData.room,
+        temperature: roomData.currentMeasurement?.temperature ?? 0,
+        humidity: roomData.currentMeasurement?.humidity ?? 0,
+        co2: roomData.currentMeasurement?.co2 ?? 0,
+        brightness: 0,
+        noise: 0,
+        needsAiring: roomData.currentMeasurement?.co2 !== undefined && roomData.currentMeasurement.co2 > 800,
+        status: roomData.room.occupied ? "occupied" : "available",
+    };
 
     const getComfortIndex = () => {
         let score = 100;
@@ -48,14 +88,15 @@ export default function RoomDetails() {
         return { label: "Faible", color: "bg-[#D50000]" };
     };
 
+    const comfortIndex = getComfortIndex();
+
+    const tempData = roomData.history?.map((m: any) => ({ time: new Date(m.timestamp).toLocaleTimeString(), value: m.temperature })) || [];
+    const co2Data = roomData.history?.map((m: any) => ({ time: new Date(m.timestamp).toLocaleTimeString(), value: m.co2 })) || [];
+
     const handleReservation = (data: { startTime: string; endTime: string; reason: string }) => {
         console.log("Réservation:", { roomId: room.id, ...data });
         setIsModalOpen(false);
     };
-
-    const comfortIndex = getComfortIndex();
-    const tempData = generateHistoricalData(room.temperature);
-    const co2Data = generateHistoricalData(room.co2);
 
     return (
         <>
@@ -71,29 +112,25 @@ export default function RoomDetails() {
                         className="flex items-center gap-2 text-[#5F6368] hover:text-[#0092bd] mb-6 transition-colors cursor-pointer"
                         aria-label="Retour à la liste des salles"
                     >
-                        <ArrowLeft className="w-5 h-5" aria-hidden="true" />
+                        <ArrowLeft className="w-5 h-5" />
                         <span>Retour aux salles</span>
                     </button>
 
-                    {/* Header */}
-                    <section aria-labelledby="room-header" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                         <div className="flex items-center justify-between flex-wrap gap-4">
                             <div className="flex-1">
-                                <h1 id="room-header" className="text-[#1A1A1A] mb-2">{room.name}</h1>
-                                <p className="text-[#5F6368]">Dernière mise à jour : il y a 2 minutes</p>
+                                <h1 className="text-[#1A1A1A] mb-2">{room.name}</h1>
+                                <p className="text-[#5F6368]">Dernière mise à jour : {roomData.currentMeasurement?.timestamp ? new Date(roomData.currentMeasurement.timestamp).toLocaleString() : "N/A"}</p>
                             </div>
                             <div className="flex items-center gap-3">
-                                {room.needsAiring && (
-                                    <AlertTriangle className="w-6 h-6 text-[#FF8F00]" aria-hidden="true" />
-                                )}
-                                <StatusBadge status={room.status} size="lg" aria-hidden="true" />
-                                {room.status === 'available' && (
+                                {room.needsAiring && <AlertTriangle className="w-6 h-6 text-[#FF8F00]" />}
+                                <StatusBadge status={room.status} size="lg" />
+                                {room.status === "available" && (
                                     <button
                                         onClick={() => setIsModalOpen(true)}
-                                        className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9a] transition-colors cursor-pointer"
-                                        aria-label={`Réserver la salle ${room.name}`}
+                                        className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9a]"
                                     >
-                                        <Calendar className="w-5 h-5" aria-hidden="true" />
+                                        <Calendar className="w-5 h-5" />
                                         <span>Réserver</span>
                                     </button>
                                 )}
