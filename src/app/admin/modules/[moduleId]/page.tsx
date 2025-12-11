@@ -114,48 +114,83 @@ export default function AdminModuleDetailPage() {
         <Navbar role="admin" onLogout={onLogout} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <button onClick={() => router.push("/admin/modules")} className="flex items-center gap-2 text-[#5F6368] hover:text-[#0092bd] mb-6 transition-colors cursor-pointer">
-            <ArrowLeft className="w-5 h-5" />
+
+          {/* Back Button */}
+          <button
+            onClick={() => router.push("/admin/modules")}
+            className="flex items-center gap-2 text-[#5F6368] hover:text-[#0092bd] mb-6 transition-colors cursor-pointer"
+            aria-label="Retour aux modules"
+          >
+            <ArrowLeft className="w-5 h-5" aria-hidden="true" />
             <span>Retour aux modules</span>
           </button>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          {/* Module header */}
+          <section aria-labelledby="module-header" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
-                <h1 className="text-[#1A1A1A] mb-2">{module.name}</h1>
+                <h1 id="module-header" className="text-[#1A1A1A] mb-2">{module.name}</h1>
                 <p className="text-[#5F6368]">ID: {module.id}</p>
               </div>
               <div className="flex items-center gap-3">
-                <StatusBadge status={module.status as any} size="lg" />
-                <button onClick={handlePowerToggle} className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors cursor-pointer ${module.status === "online" ? "bg-[#D50000] text-white hover:bg-[#B71C1C]" : "bg-[#00C853] text-white hover:bg-[#00A844]"}`}>
-                  <Power className="w-4 h-4" />
+                <StatusBadge status={module.status as any} size="lg" aria-hidden="true" />
+                <button
+                  onClick={handlePowerToggle}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors cursor-pointer ${module.status === "online" ? "bg-[#D50000] text-white hover:bg-[#B71C1C]" : "bg-[#00C853] text-white hover:bg-[#00A844]"}`}
+                  aria-label={module.status === "online" ? "Éteindre le module" : "Allumer le module"}
+                >
+                  <Power className="w-4 h-4" aria-hidden="true" />
                   <span>{module.status === "online" ? "Éteindre" : "Allumer"}</span>
                 </button>
               </div>
             </div>
-          </div>
+          </section>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* Left/Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-[#1A1A1A] mb-6">Configuration générale</h2>
+
+              {/* Configuration générale */}
+              <section aria-labelledby="config-general" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 id="config-general" className="text-[#1A1A1A] mb-6">Configuration générale</h2>
 
                 <div className="space-y-6">
                   <div>
                     <label htmlFor="moduleName" className="block text-[#1A1A1A] mb-2">Nom du module</label>
-                    <input id="moduleName" type="text" value={config.name} onChange={(e) => setConfig({ ...config, name: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent" />
+                    <input
+                      id="moduleName"
+                      type="text"
+                      value={config.name}
+                      onChange={(e) => setConfig({ ...config, name: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
+                      aria-required="true"
+                    />
                   </div>
 
                   <div>
                     <label htmlFor="roomAssignment" className="block text-[#1A1A1A] mb-2">Salle assignée</label>
-                    <select id="roomAssignment" value={config.roomId} onChange={(e) => setConfig({ ...config, roomId: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent" size={5}>
+                    <select
+                      id="roomAssignment"
+                      value={config.roomId}
+                      onChange={(e) => setConfig({ ...config, roomId: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
+                      size={5}
+                      aria-required="true"
+                    >
                       {mockRooms.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
                     </select>
                   </div>
 
                   <div>
                     <label htmlFor="acquisitionInterval" className="block text-[#1A1A1A] mb-2">Intervalle d'acquisition</label>
-                    <select id="acquisitionInterval" value={config.acquisitionInterval} onChange={(e) => setConfig({ ...config, acquisitionInterval: parseInt(e.target.value) })} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent">
+                    <select
+                      id="acquisitionInterval"
+                      value={config.acquisitionInterval}
+                      onChange={(e) => setConfig({ ...config, acquisitionInterval: parseInt(e.target.value) })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
+                      aria-required="true"
+                    >
                       <option value={10}>10 secondes</option>
                       <option value={30}>30 secondes</option>
                       <option value={60}>1 minute</option>
@@ -165,15 +200,19 @@ export default function AdminModuleDetailPage() {
                     <p className="text-[#5F6368] text-sm mt-1">Fréquence à laquelle le module collecte les données</p>
                   </div>
 
-                  <button onClick={handleSave} className="w-full bg-[#0092bd] text-white py-3 rounded-lg hover:bg-[#007a9d] transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                    <Save className="w-5 h-5" />
+                  <button
+                    onClick={handleSave}
+                    className="w-full bg-[#0092bd] text-white py-3 rounded-lg hover:bg-[#007a9d] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Save className="w-5 h-5" aria-hidden="true" />
                     <span>Enregistrer la configuration</span>
                   </button>
                 </div>
-              </div>
+              </section>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-[#1A1A1A] mb-4">Mise à jour du firmware</h2>
+              {/* Firmware */}
+              <section aria-labelledby="firmware-update" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 id="firmware-update" className="text-[#1A1A1A] mb-4">Mise à jour du firmware</h2>
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-[#5F6368]">Version actuelle</p>
@@ -184,14 +223,20 @@ export default function AdminModuleDetailPage() {
                     <p className="text-[#00C853]">v2.3.1</p>
                   </div>
                 </div>
-                <button onClick={handleFirmwareUpdate} disabled={module.firmwareVersion === "2.3.1"} className="w-full bg-[#00C853] text-white py-3 rounded-lg hover:bg-[#00A844] transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                  <Download className="w-5 h-5" />
+                <button
+                  onClick={handleFirmwareUpdate}
+                  disabled={module.firmwareVersion === "2.3.1"}
+                  className="w-full bg-[#00C853] text-white py-3 rounded-lg hover:bg-[#00A844] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  aria-disabled={module.firmwareVersion === "2.3.1"}
+                >
+                  <Download className="w-5 h-5" aria-hidden="true" />
                   <span>{module.firmwareVersion === "2.3.1" ? "Firmware à jour" : "Mettre à jour (OTA)"}</span>
                 </button>
-              </div>
+              </section>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-[#1A1A1A] mb-6">Historique des mesures</h2>
+              {/* Historical Data */}
+              <section aria-labelledby="historical-data" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 id="historical-data" className="text-[#1A1A1A] mb-6">Historique des mesures</h2>
                 <div className="space-y-8">
                   <div>
                     <h3 className="text-[#1A1A1A] mb-4">Température</h3>
@@ -223,17 +268,17 @@ export default function AdminModuleDetailPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </section>
             </div>
 
-            {/* Right sidebar */}
-            <div className="space-y-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-[#1A1A1A] mb-6">État du module</h2>
+            {/* Right Sidebar */}
+            <aside className="space-y-6" aria-label="Sidebar d'état du module et actions">
+              <section aria-labelledby="module-status" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 id="module-status" className="text-[#1A1A1A] mb-6">État du module</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Battery className={`w-5 h-5 ${module.batteryLevel > 50 ? "text-[#00C853]" : module.batteryLevel > 20 ? "text-[#FF8F00]" : "text-[#D50000]"}`} />
+                      <Battery className={`w-5 h-5 ${module.batteryLevel > 50 ? "text-[#00C853]" : module.batteryLevel > 20 ? "text-[#FF8F00]" : "text-[#D50000]"}`} aria-hidden="true" />
                       <span className="text-[#5F6368]">Batterie</span>
                     </div>
                     <span className={`${module.batteryLevel > 50 ? "text-[#00C853]" : module.batteryLevel > 20 ? "text-[#FF8F00]" : "text-[#D50000]"}`}>{module.batteryLevel}%</span>
@@ -241,7 +286,7 @@ export default function AdminModuleDetailPage() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Clock className="w-5 h-5 text-[#5F6368]" />
+                      <Clock className="w-5 h-5 text-[#5F6368]" aria-hidden="true" />
                       <span className="text-[#5F6368]">Dernière synchro</span>
                     </div>
                     <span className="text-[#1A1A1A] text-sm">{new Date(module.lastSync).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
@@ -249,7 +294,7 @@ export default function AdminModuleDetailPage() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Signal className="w-5 h-5 text-[#5F6368]" />
+                      <Signal className="w-5 h-5 text-[#5F6368]" aria-hidden="true" />
                       <span className="text-[#5F6368]">Signal</span>
                     </div>
                     <span className="text-[#00C853]">Excellent</span>
@@ -257,73 +302,55 @@ export default function AdminModuleDetailPage() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <MapPin className="w-5 h-5 text-[#5F6368]" />
+                      <MapPin className="w-5 h-5 text-[#5F6368]" aria-hidden="true" />
                       <span className="text-[#5F6368]">Salle</span>
                     </div>
                     <span className="text-[#1A1A1A]">{room.name}</span>
                   </div>
                 </div>
 
-                <button onClick={handleSync} className="w-full mt-6 border-2 border-[#0092bd] text-[#0092bd] py-2 rounded-lg hover:bg-[#0092bd] hover:text-white transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                  <RefreshCw className="w-4 h-4" />
+                <button
+                  onClick={handleSync}
+                  className="w-full mt-6 border-2 border-[#0092bd] text-[#0092bd] py-2 rounded-lg hover:bg-[#0092bd] hover:text-white transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  aria-label="Forcer la synchronisation du module"
+                >
+                  <RefreshCw className="w-4 h-4" aria-hidden="true" />
                   <span>Forcer la synchronisation</span>
                 </button>
-              </div>
+              </section>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-[#1A1A1A] mb-6">Mesures actuelles</h2>
+              {/* Mesures actuelles */}
+              <section aria-labelledby="current-measures" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 id="current-measures" className="text-[#1A1A1A] mb-6">Mesures actuelles</h2>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Thermometer className="w-5 h-5 text-[#0092bd]" />
-                      <span className="text-[#5F6368]">Température</span>
+                  {[
+                    { label: "Température", value: `${room.temperature}°C`, icon: <Thermometer className="w-5 h-5 text-[#0092bd]" aria-hidden="true" /> },
+                    { label: "CO₂", value: `${room.co2} ppm`, icon: <Wind className="w-5 h-5 text-[#0092bd]" aria-hidden="true" /> },
+                    { label: "Humidité", value: `${room.humidity}%`, icon: <Droplets className="w-5 h-5 text-[#0092bd]" aria-hidden="true" /> },
+                    { label: "Luminosité", value: `${room.brightness} lux`, icon: <Sun className="w-5 h-5 text-[#0092bd]" aria-hidden="true" /> },
+                    { label: "Son", value: `${room.noise} dB`, icon: <Volume2 className="w-5 h-5 text-[#0092bd]" aria-hidden="true" /> },
+                  ].map((m) => (
+                    <div key={m.label} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {m.icon}
+                        <span className="text-[#5F6368]">{m.label}</span>
+                      </div>
+                      <span className="text-[#1A1A1A]">{m.value}</span>
                     </div>
-                    <span className="text-[#1A1A1A]">{room.temperature}°C</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Wind className="w-5 h-5 text-[#0092bd]" />
-                      <span className="text-[#5F6368]">CO₂</span>
-                    </div>
-                    <span className="text-[#1A1A1A]">{room.co2} ppm</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Droplets className="w-5 h-5 text-[#0092bd]" />
-                      <span className="text-[#5F6368]">Humidité</span>
-                    </div>
-                    <span className="text-[#1A1A1A]">{room.humidity}%</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Sun className="w-5 h-5 text-[#0092bd]" />
-                      <span className="text-[#5F6368]">Luminosité</span>
-                    </div>
-                    <span className="text-[#1A1A1A]">{room.brightness} lux</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Volume2 className="w-5 h-5 text-[#0092bd]" />
-                      <span className="text-[#5F6368]">Son</span>
-                    </div>
-                    <span className="text-[#1A1A1A]">{room.noise} dB</span>
-                  </div>
+                  ))}
                 </div>
-              </div>
+              </section>
 
-              <div className="bg-white rounded-xl shadow-sm border-2 border-[#D50000] p-6">
+              {/* Danger Zone */}
+              <section aria-labelledby="danger-zone" className="bg-white rounded-xl shadow-sm border-2 border-[#D50000] p-6">
                 <h2 className="text-[#D50000] mb-4">Zone de danger</h2>
                 <p className="text-[#5F6368] text-sm mb-4">La suppression du module est définitive et entraînera la perte de toutes les données associées.</p>
                 <button onClick={() => setShowDeleteModal(true)} className="w-full bg-[#D50000] text-white py-2 rounded-lg hover:bg-[#B71C1C] transition-colors flex items-center justify-center gap-2 cursor-pointer">
                   <Trash2 className="w-4 h-4" />
                   <span>Supprimer le module</span>
                 </button>
-              </div>
-            </div>
+              </section>
+            </aside>
           </div>
         </div>
 
