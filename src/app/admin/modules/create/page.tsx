@@ -1,28 +1,29 @@
-'use client';
+// src/app/admin/modules/create/page.tsx
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/components/Toast';
-import Navbar from '@/components/Navbar';
-import { fetchRooms, createModule } from '@/lib/api';
-import { ArrowLeft, Bluetooth, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/Toast";
+import Navbar from "@/components/Navbar";
+import { fetchRooms, createModule } from "@/lib/api";
+import { ArrowLeft, Bluetooth, AlertCircle } from "lucide-react";
 
 export default function AddModule() {
   const router = useRouter();
   const { notify } = useToast();
 
   const [formData, setFormData] = useState({
-    moduleId: '',
-    moduleName: '',
-    roomId: ''
+    moduleId: "",
+    moduleName: "",
+    roomId: ""
   });
 
   const [rooms, setRooms] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   const onLogout = () => {
-    localStorage.removeItem('role');
-    router.push('/login');
+    localStorage.removeItem("role");
+    router.push("/login");
   };
 
   // 🔹 Récupérer les salles
@@ -30,16 +31,16 @@ export default function AddModule() {
     const loadRooms = async () => {
       try {
         const data = await fetchRooms();
-        // Assurer que c'est bien un tableau
+        // Assurer que c"est bien un tableau
         if (Array.isArray(data)) {
           setRooms(data.filter((r) => r && (r._id || r.id)));
         } else {
           setRooms([]);
-          notify("Erreur : les salles n'ont pas pu être chargées.", 'error');
+          notify("Erreur : les salles n'ont pas pu être chargées.", "error");
         }
       } catch (err) {
         console.error(err);
-        notify("Impossible de charger les salles.", 'error');
+        notify("Impossible de charger les salles.", "error");
       }
     };
     loadRooms();
@@ -48,7 +49,7 @@ export default function AddModule() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.moduleId || !formData.moduleName || !formData.roomId) {
-      notify("Veuillez remplir tous les champs obligatoires.", 'error');
+      notify("Veuillez remplir tous les champs obligatoires.", "error");
       return;
     }
 
@@ -59,11 +60,11 @@ export default function AddModule() {
         name: formData.moduleName,
         roomId: formData.roomId
       });
-      notify(`Module ${formData.moduleName} ajouté avec succès !`, 'success');
-      router.push('/admin/modules');
+      notify(`Module ${formData.moduleName} ajouté avec succès !`, "success");
+      router.push("/admin/modules");
     } catch (err: any) {
       console.error(err);
-      notify(err?.response?.data?.error || 'Erreur lors de la création du module.', 'error');
+      notify(err?.response?.data?.error || "Erreur lors de la création du module.", "error");
     } finally {
       setLoading(false);
     }
@@ -81,7 +82,7 @@ export default function AddModule() {
 
           {/* Back Button */}
           <button
-            onClick={() => router.push('/admin/modules')}
+            onClick={() => router.push("/admin/modules")}
             className="flex items-center gap-2 text-[#5F6368] hover:text-[#0092bd] mb-6 transition-colors cursor-pointer"
             aria-label="Retour à la liste des modules"
           >
@@ -182,14 +183,14 @@ export default function AddModule() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`flex-1 ${loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#0092bd] hover:bg-[#007a9d]'} text-white py-3 rounded-lg`}
+                  className={`flex-1 ${loading ? "bg-gray-300 cursor-not-allowed" : "bg-[#0092bd] hover:bg-[#007a9d]"} text-white py-3 rounded-lg`}
                   aria-label="Ajouter le module"
                 >
                   {loading ? "Création en cours..." : "Ajouter le module"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => router.push('/admin/modules')}
+                  onClick={() => router.push("/admin/modules")}
                   className="flex-1 border-2 border-gray-300 text-[#5F6368] py-3 rounded-lg hover:bg-gray-50"
                   aria-label="Annuler et revenir à la liste des modules"
                 >
