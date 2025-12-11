@@ -186,6 +186,10 @@ export default function AdminDashboard() {
                         <div className="w-4 h-4 rounded bg-[#D50000]"></div>
                         <span className="text-[#5F6368] text-sm">Occupée</span>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-white bg-[#FF8F00] rounded p-0.5" />
+                        <span className="text-[#5F6368] text-sm">Aération nécessaire</span>
+                      </div>
                     </div>
 
                     {/* Rooms Grid */}
@@ -195,15 +199,13 @@ export default function AdminDashboard() {
                           <button
                             key={room._id}
                             onClick={() => router.push(`/admin/modules/${room.moduleId}`)}
-                            className={`
-                              aspect-square rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center
+                            className={`relative aspect-square rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center
                               transition-all duration-200 hover:scale-105 hover:shadow-md
-                              ${!room.occupied ? 'bg-[#00C853]' : 'bg-[#D50000]'}
-                            `}
-                            aria-label={`Salle ${room.name}, température ${room.temperature} degrés, ${room.occupied ? 'occupée' : 'disponible'}`}
+                              ${!room.occupied ? 'bg-[#00C853]' : 'bg-[#D50000]'}`}
+                            aria-label={`Salle ${room.name}, température ${room.temperature}°C, ${room.occupied ? 'occupée' : 'disponible'}${room.needsAiring ? ', aération nécessaire' : ''}`}
                           >
                             {room.needsAiring && (
-                              <AlertTriangle className="absolute top-1 left-1 sm:top-2 sm:left-2 w-3 h-3 sm:w-4 sm:h-4 text-white" aria-hidden="true" />
+                              <AlertTriangle className="absolute top-2 left-2 w-4 h-4 text-white" aria-hidden="true" />
                             )}
                             <p className="text-white text-center mb-1 text-xs sm:text-base">{room.name}</p>
                             <p className="text-white text-[10px] sm:text-xs opacity-90">{room.temperature}°C</p>
