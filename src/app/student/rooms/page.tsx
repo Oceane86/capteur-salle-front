@@ -1,5 +1,6 @@
 // src/app/student/rooms/page.tsx
-import { useNavigate } from 'react-router-dom';
+"use client";
+import { useRouter } from "next/navigation";
 import Navbar from '@/components/Navbar';
 import RoomCard from '@/components/RoomCard';
 import { mockRooms } from '@/data/mockData';
@@ -11,7 +12,7 @@ interface RoomsListProps {
 }
 
 export default function RoomsList({ onLogout }: RoomsListProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'occupied'>('all');
   const [floorFilter, setFloorFilter] = useState<'all' | '1' | '2' | '3' | '4'>('all');
@@ -40,27 +41,27 @@ export default function RoomsList({ onLogout }: RoomsListProps) {
   });
 
   return (
-    <div className="min-h-screen bg-platinium">
+    <div className="min-h-screen bg-[#F5F7FA]">
       <Navbar role="student" onLogout={onLogout} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-carbon-black mb-2">Salles disponibles</h1>
-          <p className="text-dim-gray">Consultez l&apos;état en temps réel de toutes les salles du campus</p>
+          <h1 className="text-[#1A1A1A] mb-2">Salles disponibles</h1>
+          <p className="text-[#5F6368]">Consultez l&apos;état en temps réel de toutes les salles du campus</p>
         </div>
 
         {/* Search Bar and Filters */}
         <div className="mb-6 flex flex-col lg:flex-row gap-4 items-start lg:items-center">
           {/* Search Bar */}
           <div className="relative w-full lg:max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-dim-gray" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5F6368]" />
             <input
               type="text"
               placeholder="Rechercher une salle..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue focus:border-transparent"
+              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent"
             />
           </div>
 
@@ -73,7 +74,7 @@ export default function RoomsList({ onLogout }: RoomsListProps) {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="flex-1 lg:flex-none lg:min-w-[160px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue focus:border-transparent text-carbon-black"
+              className="flex-1 lg:flex-none lg:min-w-[160px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent text-[#1A1A1A]"
             >
               <option value="all">Toutes les salles</option>
               <option value="available">Disponibles</option>
@@ -84,7 +85,7 @@ export default function RoomsList({ onLogout }: RoomsListProps) {
             <select
               value={floorFilter}
               onChange={(e) => setFloorFilter(e.target.value as any)}
-              className="flex-1 lg:flex-none lg:min-w-[140px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue focus:border-transparent text-carbon-black"
+              className="flex-1 lg:flex-none lg:min-w-[140px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent text-[#1A1A1A]"
             >
               <option value="all">Tous les étages</option>
               <option value="1">Étage 1</option>
@@ -97,7 +98,7 @@ export default function RoomsList({ onLogout }: RoomsListProps) {
             <select
               value={co2Filter}
               onChange={(e) => setCo2Filter(e.target.value as any)}
-              className="flex-1 lg:flex-none lg:min-w-[160px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bondi-blue focus:border-transparent text-carbon-black"
+              className="flex-1 lg:flex-none lg:min-w-[160px] px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0092bd] focus:border-transparent text-[#1A1A1A]"
             >
               <option value="all">Tous les niveaux</option>
               <option value="good">Bon (≤ 800 ppm)</option>
@@ -113,7 +114,7 @@ export default function RoomsList({ onLogout }: RoomsListProps) {
                     setStatusFilter('all');
                     setFloorFilter('all');
                   }}
-                  className="px-4 py-2 border-2 border-gray-300 text-dim-gray rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="px-4 py-2 border-2 border-gray-300 text-[#5F6368] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   Réinitialiser
                 </button>
@@ -128,7 +129,7 @@ export default function RoomsList({ onLogout }: RoomsListProps) {
             <RoomCard
               key={room.id}
               room={room}
-              onClick={() => navigate(`/student/room/${room.id}`)}
+              onClick={() => router.push(`/student/room/${room.id}`)}
             />
           ))}
         </div>
@@ -136,7 +137,7 @@ export default function RoomsList({ onLogout }: RoomsListProps) {
         {/* No Results */}
         {filteredRooms.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-dim-gray">Aucune salle trouvée</p>
+            <p className="text-[#5F6368]">Aucune salle trouvée</p>
           </div>
         )}
       </div>

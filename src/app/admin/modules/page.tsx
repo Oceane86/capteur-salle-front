@@ -52,19 +52,19 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
   };
 
   return (
-    <div className="min-h-screen bg-platinium">
+    <div className="min-h-screen bg-[#F5F7FA]">
       <Navbar role="admin" onLogout={onLogout} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
-            <h1 className="text-carbon-black mb-2">Gestion des modules IoT</h1>
-            <p className="text-dim-gray">Administrez tous les capteurs et modules du campus</p>
+            <h1 className="text-[#1A1A1A] mb-2">Gestion des modules IoT</h1>
+            <p className="text-[#5F6368]">Administrez tous les capteurs et modules du campus</p>
           </div>
           <button
             onClick={() => navigate('/admin/modules/add')}
-            className="flex items-center gap-2 bg-bondi-blue text-white px-6 py-3 rounded-lg hover:bg-cerulean transition-colors cursor-pointer"
+            className="flex items-center gap-2 bg-[#0092bd] text-white px-6 py-3 rounded-lg hover:bg-[#007a9d] transition-colors cursor-pointer"
           >
             <Plus className="w-5 h-5" />
             <span>Ajouter un module</span>
@@ -74,20 +74,20 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <p className="text-dim-gray mb-1">Modules en ligne</p>
-            <p className="text-carbon-black text-3xl">
+            <p className="text-[#5F6368] mb-1">Modules en ligne</p>
+            <p className="text-[#1A1A1A] text-3xl">
               {mockModules.filter(m => m.status === 'online').length}
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <p className="text-dim-gray mb-1">Modules hors ligne</p>
-            <p className="text-carbon-black text-3xl">
+            <p className="text-[#5F6368] mb-1">Modules hors ligne</p>
+            <p className="text-[#1A1A1A] text-3xl">
               {mockModules.filter(m => m.status === 'offline').length}
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <p className="text-dim-gray mb-1">Total modules</p>
-            <p className="text-carbon-black text-3xl">{mockModules.length}</p>
+            <p className="text-[#5F6368] mb-1">Total modules</p>
+            <p className="text-[#1A1A1A] text-3xl">{mockModules.length}</p>
           </div>
         </div>
 
@@ -99,37 +99,37 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
                 {/* Module Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-carbon-black">{module.name}</h3>
+                    <h3 className="text-[#1A1A1A]">{module.name}</h3>
                     <StatusBadge status={module.status} size="sm" />
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     {/* Room Assignment */}
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-dim-gray" />
+                      <MapPin className="w-4 h-4 text-[#5F6368]" />
                       <div>
-                        <p className="text-dim-gray text-xs">Salle assignée</p>
-                        <p className="text-carbon-black">{getRoomName(module.roomId)}</p>
+                        <p className="text-[#5F6368] text-xs">Salle assignée</p>
+                        <p className="text-[#1A1A1A]">{getRoomName(module.roomId)}</p>
                       </div>
                     </div>
 
                     {/* Acquisition Interval */}
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-dim-gray" />
+                      <Clock className="w-4 h-4 text-[#5F6368]" />
                       <div>
-                        <p className="text-dim-gray text-xs">Intervalle</p>
-                        <p className="text-carbon-black">{module.acquisitionInterval}s</p>
+                        <p className="text-[#5F6368] text-xs">Intervalle</p>
+                        <p className="text-[#1A1A1A]">{module.acquisitionInterval}s</p>
                       </div>
                     </div>
 
                     {/* Battery Level */}
                     <div className="flex items-center gap-2">
-                      <Battery className="w-4 h-4 text-dim-gray" />
+                      <Battery className="w-4 h-4 text-[#5F6368]" />
                       <div>
-                        <p className="text-dim-gray text-xs">Batterie</p>
+                        <p className="text-[#5F6368] text-xs">Batterie</p>
                         <p className={`${
-                          module.batteryLevel > 50 ? 'text-jade-green' : 
-                          module.batteryLevel > 20 ? 'text-deep-saffron' : 'text-brick-ember'
+                          module.batteryLevel > 50 ? 'text-[#00C853]' : 
+                          module.batteryLevel > 20 ? 'text-[#FF8F00]' : 'text-[#D50000]'
                         }`}>
                           {module.batteryLevel}%
                         </p>
@@ -138,15 +138,15 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
 
                     {/* Firmware */}
                     <div className="flex items-center gap-2">
-                      <Signal className="w-4 h-4 text-dim-gray" />
+                      <Signal className="w-4 h-4 text-[#5F6368]" />
                       <div>
-                        <p className="text-dim-gray text-xs">Firmware</p>
-                        <p className="text-carbon-black">v{module.firmwareVersion}</p>
+                        <p className="text-[#5F6368] text-xs">Firmware</p>
+                        <p className="text-[#1A1A1A]">v{module.firmwareVersion}</p>
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-dim-gray text-sm mt-3">
+                  <p className="text-[#5F6368] text-sm mt-3">
                     Dernière synchro : {new Date(module.lastSync).toLocaleString('fr-FR')}
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => navigate(`/admin/modules/${module.id}`)}
-                    className="flex items-center gap-2 bg-bondi-blue text-white px-4 py-2 rounded-lg hover:bg-cerulean transition-colors text-sm cursor-pointer"
+                    className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9d] transition-colors text-sm cursor-pointer"
                     title="Configurer"
                   >
                     <Settings className="w-4 h-4" />
@@ -166,8 +166,8 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
                     onClick={() => handlePowerToggle(module)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
                       module.status === 'online'
-                        ? 'bg-brick-ember text-white hover:bg-brick-ember'
-                        : 'bg-jade-green text-white hover:bg-medium-jungle'
+                        ? 'bg-[#D50000] text-white hover:bg-[#D50000]'
+                        : 'bg-[#00C853] text-white hover:bg-[#00A844]'
                     }`}
                     title={module.status === 'online' ? 'Éteindre' : 'Allumer'}
                   >
@@ -176,7 +176,7 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
                   
                   <button
                     onClick={() => handleSync(module)}
-                    className="flex items-center gap-2 bg-platinium text-dim-gray px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm cursor-pointer"
+                    className="flex items-center gap-2 bg-[#F5F7FA] text-[#5F6368] px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm cursor-pointer"
                     title="Forcer la synchronisation"
                   >
                     <RefreshCw className="w-4 h-4" />
@@ -194,12 +194,12 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
           isOpen={showPowerModal}
           onClose={() => setShowPowerModal(false)}
           onConfirm={confirmPowerToggle}
-          icon={<Power className="w-8 h-8 text-brick-ember" />}
-          iconBgColor="bg-soft-blush"
+          icon={<Power className="w-8 h-8 text-[#D50000]" />}
+          iconBgColor="bg-[#FEE2E2]"
           message={`Êtes-vous sûr de vouloir ${selectedModule.status === 'online' ? 'éteindre' : 'allumer'} le module <strong>${selectedModule.name}</strong> ?<br />Cette action peut affecter la collecte des données en temps réel.`}
           confirmText={selectedModule.status === 'online' ? 'Éteindre' : 'Allumer'}
-          confirmButtonColor="bg-brick-ember"
-          confirmButtonHoverColor="hover:bg-brick-ember"
+          confirmButtonColor="bg-[#D50000]"
+          confirmButtonHoverColor="hover:bg-[#D50000]"
         />
       )}
 
@@ -209,12 +209,12 @@ export default function ModuleManagement({ onLogout }: ModuleManagementProps) {
           isOpen={showSyncModal}
           onClose={() => setShowSyncModal(false)}
           onConfirm={confirmSync}
-          icon={<RefreshCw className="w-8 h-8 text-bondi-blue" />}
+          icon={<RefreshCw className="w-8 h-8 text-[#0092bd]" />}
           iconBgColor="bg-alice-blue"
           message={`Êtes-vous sûr de vouloir forcer la synchronisation du module <strong>${selectedModule.name}</strong> ?<br />Cette action va actualiser immédiatement toutes les données du capteur.`}
           confirmText="Synchroniser"
-          confirmButtonColor="bg-bondi-blue"
-          confirmButtonHoverColor="hover:bg-cerulean"
+          confirmButtonColor="bg-[#0092bd]"
+          confirmButtonHoverColor="hover:bg-[#007a9d]"
         />
       )}
     </div>

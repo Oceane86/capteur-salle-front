@@ -1,0 +1,1 @@
+// src/app/admin/modules/[moduleId]/page.tsx
