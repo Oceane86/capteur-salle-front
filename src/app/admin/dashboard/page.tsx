@@ -45,7 +45,7 @@ export default function AdminDashboard() {
           name: r.name,
           floor: r.floor,
           occupied: r.occupied ?? false,
-          temperature: r.lastMeasurement?.temperature ?? 0,
+          temperature: r.lastMeasurement?.temperature,
           co2: r.lastMeasurement?.co2 ?? 0,
           moduleId: r.moduleId ?? "",
           needsAiring: r.lastMeasurement?.co2 !== undefined ? r.lastMeasurement.co2 > 800 : false,
@@ -64,9 +64,10 @@ export default function AdminDashboard() {
     loadData();
   }, []);
 
-  const avgTemp = rooms.length > 0
-    ? (rooms.reduce((acc, r) => acc + (r.temperature ?? 0), 0) / rooms.length).toFixed(1)
-    : 0;
+  const roomsWithTemp = rooms.filter(r => r.temperature !== undefined && r.temperature !== null);
+  const avgTemp = roomsWithTemp.length > 0
+    ? (roomsWithTemp.reduce((acc, r) => acc + (r.temperature ?? 0), 0) / roomsWithTemp.length).toFixed(1)
+    : "-";
 
   const avgCO2 = rooms.length > 0
     ? Math.round(rooms.reduce((acc, r) => acc + (r.co2 ?? 0), 0) / rooms.length)
@@ -115,7 +116,7 @@ export default function AdminDashboard() {
                       <Thermometer className="w-5 h-5 text-[#0092bd]" aria-hidden="true" />
                     </div>
                   </div>
-                  <p className="text-[#1A1A1A] text-3xl">{avgTemp}°C</p>
+                  <p className="text-[#1A1A1A] text-3xl">{avgTemp === "-" ? "N/A" : `${avgTemp}°C`}</p>
                 </div>
 
                 {/* CO₂ moyen */}
