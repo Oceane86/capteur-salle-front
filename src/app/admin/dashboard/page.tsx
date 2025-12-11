@@ -21,7 +21,7 @@ type Room = {
 
 type Module = {
   id: string;
-  status: "online" | "offline";
+  status: string;
 };
 
 export default function AdminDashboard() {
@@ -51,8 +51,13 @@ export default function AdminDashboard() {
           needsAiring: r.lastMeasurement?.co2 !== undefined ? r.lastMeasurement.co2 > 800 : false,
         }));
 
+        const normalizedModules: Module[] = modulesData.map((m: any) => ({
+          id: m.id,
+          status: m.status?.toLowerCase() || "offline",
+        }));
+
         setRooms(enrichedRooms);
-        setModules(modulesData);
+        setModules(normalizedModules);
       } catch (err) {
         console.error(err);
         setError("Impossible de charger les données du dashboard.");
@@ -77,8 +82,9 @@ export default function AdminDashboard() {
     ? ((rooms.filter((r) => r.occupied).length / rooms.length) * 100).toFixed(0)
     : 0;
 
-  const onlineModules = modules.filter((m) => m.status === "online").length;
-  const offlineModules = modules.filter((m) => m.status === "offline").length;
+  const onlineModules = modules.filter(m => m.status === "online").length;
+  const offlineModules = modules.filter(m => m.status === "offline").length;
+
   const latestAlerts = rooms.filter((r) => r.needsAiring);
 
   return (
@@ -93,7 +99,6 @@ export default function AdminDashboard() {
         }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header */}
           <header className="mb-8" role="banner">
             <h1 className="text-[#1A1A1A] mb-2">Dashboard administrateur</h1>
             <p className="text-[#5F6368]">Vue d&apos;ensemble du campus</p>
