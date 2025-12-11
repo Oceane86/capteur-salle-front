@@ -34,4 +34,12 @@ export const createReservation = async (
   return res.data;
 };
 
+// GET : Modules list
+export const fetchModules = async () => {
+  const res = await api.get('/api/modules');
+  return res.data;
+};
+
+
+
 export default api;

@@ -1,17 +1,20 @@
 // src/app/admin/modules/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import StatusBadge from "@/components/StatusBadge";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/components/Toast";
-import { mockModules, mockRooms } from "@/data/mockData";
 import { Plus, Settings, Power, RefreshCw, Battery, MapPin, Clock, Signal } from "lucide-react";
+import { fetchModules } from "@/lib/api";
 
 export default function AdminModulesPage() {
   const router = useRouter();
+  const [modules, setModules] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showPowerModal, setShowPowerModal] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
   const [selectedModule, setSelectedModule] = useState<any | null>(null);
@@ -22,7 +25,21 @@ export default function AdminModulesPage() {
     router.push("/login");
   };
 
-  const getRoomName = (roomId: string) => mockRooms.find((r) => r.id === roomId)?.name || "Non assignée";
+  useEffect(() => {
+    const loadModules = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchModules();
+        setModules(data);
+      } catch (err) {
+        console.error(err);
+        setError("Impossible de charger les modules.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadModules();
+  }, []);
 
   const handlePowerToggle = (module: any) => {
     setSelectedModule(module);
@@ -37,7 +54,7 @@ export default function AdminModulesPage() {
   const confirmPowerToggle = () => {
     setShowPowerModal(false);
     notify(
-      selectedModule?.status === "online" ? "Module éteint" : "Module allumé",
+      selectedModule?.online ? "Module éteint" : "Module allumé",
       "success"
     );
   };
@@ -46,6 +63,27 @@ export default function AdminModulesPage() {
     setShowSyncModal(false);
     notify("Synchronisation forcée démarrée...", "success");
   };
+
+  const getRoomName = (room: any) => room?.name || "Non assignée";
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Chargement des modules...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#F5F7FA]">
+        <Navbar role="admin" onLogout={onLogout} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <p className="text-[#5F6368] text-center">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -77,7 +115,7 @@ export default function AdminModulesPage() {
           <section role="region" aria-labelledby="modules-list-header" className="grid grid-cols-1 gap-4">
             <h2 id="modules-list-header" className="sr-only">Liste des modules IoT</h2>
 
-            {mockModules.map((module) => (
+            {modules.map((module) => (
               <div
                 key={module.id}
                 className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
@@ -85,8 +123,8 @@ export default function AdminModulesPage() {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-3">
-                      <h3 className="text-[#1A1A1A]">{module.name}</h3>
-                      <StatusBadge status={module.status as any} size="sm" aria-hidden="true" />
+                      <h3 className="text-[#1A1A1A]">{module.name || module.hardwareId}</h3>
+                      <StatusBadge status={module.online ? "online" : "offline"} size="sm" aria-hidden="true" />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -94,7 +132,7 @@ export default function AdminModulesPage() {
                         <MapPin className="w-4 h-4 text-[#5F6368]" aria-hidden="true" />
                         <div>
                           <p className="text-[#5F6368] text-xs">Salle assignée</p>
-                          <p className="text-[#1A1A1A]">{getRoomName(module.roomId)}</p>
+                          <p className="text-[#1A1A1A]">{getRoomName(module.room)}</p>
                         </div>
                       </div>
 
@@ -102,7 +140,7 @@ export default function AdminModulesPage() {
                         <Clock className="w-4 h-4 text-[#5F6368]" aria-hidden="true" />
                         <div>
                           <p className="text-[#5F6368] text-xs">Intervalle</p>
-                          <p className="text-[#1A1A1A]">{module.acquisitionInterval}s</p>
+                          <p className="text-[#1A1A1A]">{module.acquisitionIntervalSec}s</p>
                         </div>
                       </div>
 
@@ -111,15 +149,14 @@ export default function AdminModulesPage() {
                         <div>
                           <p className="text-[#5F6368] text-xs">Batterie</p>
                           <p
-                            className={`${
-                              module.batteryLevel > 50
+                            className={`${module.batteryPercent > 50
                                 ? "text-[#00C853]"
-                                : module.batteryLevel > 20
-                                ? "text-[#FF8F00]"
-                                : "text-[#D50000]"
-                            }`}
+                                : module.batteryPercent > 20
+                                  ? "text-[#FF8F00]"
+                                  : "text-[#D50000]"
+                              }`}
                           >
-                            {module.batteryLevel}%
+                            {module.batteryPercent ?? "N/A"}%
                           </p>
                         </div>
                       </div>
@@ -128,13 +165,13 @@ export default function AdminModulesPage() {
                         <Signal className="w-4 h-4 text-[#5F6368]" aria-hidden="true" />
                         <div>
                           <p className="text-[#5F6368] text-xs">Firmware</p>
-                          <p className="text-[#1A1A1A]">v{module.firmwareVersion}</p>
+                          <p className="text-[#1A1A1A]">v{module.firmwareVersion || "N/A"}</p>
                         </div>
                       </div>
                     </div>
 
                     <p className="text-[#5F6368] text-sm mt-3">
-                      Dernière synchro : {new Date(module.lastSync).toLocaleString("fr-FR")}
+                      Dernière synchro : {module.lastSeenAt ? new Date(module.lastSeenAt).toLocaleString("fr-FR") : "N/A"}
                     </p>
                   </div>
 
@@ -142,7 +179,7 @@ export default function AdminModulesPage() {
                     <button
                       onClick={() => router.push(`/admin/modules/${module.id}`)}
                       className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9d] transition-colors text-sm cursor-pointer"
-                      aria-label={`Configurer le module ${module.name}`}
+                      aria-label={`Configurer le module ${module.name || module.hardwareId}`}
                     >
                       <Settings className="w-4 h-4" aria-hidden="true" />
                       <span className="hidden sm:inline">Configurer</span>
@@ -150,12 +187,11 @@ export default function AdminModulesPage() {
 
                     <button
                       onClick={() => handlePowerToggle(module)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
-                        module.status === "online"
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${module.online
                           ? "bg-[#D50000] text-white hover:bg-[#B71C1C]"
                           : "bg-[#00C853] text-white hover:bg-[#00A844]"
-                      }`}
-                      aria-label={`${module.status === "online" ? "Éteindre" : "Allumer"} le module ${module.name}`}
+                        }`}
+                      aria-label={`${module.online ? "Éteindre" : "Allumer"} le module ${module.name || module.hardwareId}`}
                     >
                       <Power className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -163,7 +199,7 @@ export default function AdminModulesPage() {
                     <button
                       onClick={() => handleSync(module)}
                       className="flex items-center gap-2 bg-[#F5F7FA] text-[#5F6368] px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm cursor-pointer"
-                      aria-label={`Forcer la synchronisation du module ${module.name}`}
+                      aria-label={`Forcer la synchronisation du module ${module.name || module.hardwareId}`}
                     >
                       <RefreshCw className="w-4 h-4" aria-hidden="true" />
                     </button>
@@ -182,10 +218,9 @@ export default function AdminModulesPage() {
             onConfirm={confirmPowerToggle}
             icon={<Power className="w-8 h-8 text-[#D50000]" aria-hidden="true" />}
             iconBgColor="bg-[#FEE2E2]"
-            message={`Êtes-vous sûr de vouloir ${
-              selectedModule.status === "online" ? "éteindre" : "allumer"
-            } le module <strong>${selectedModule.name}</strong> ?<br />Cette action peut affecter la collecte des données en temps réel.`}
-            confirmText={selectedModule.status === "online" ? "Éteindre" : "Allumer"}
+            message={`Êtes-vous sûr de vouloir ${selectedModule.online ? "éteindre" : "allumer"
+              } le module <strong>${selectedModule.name || selectedModule.hardwareId}</strong> ?<br />Cette action peut affecter la collecte des données en temps réel.`}
+            confirmText={selectedModule.online ? "Éteindre" : "Allumer"}
             confirmButtonColor="bg-[#D50000]"
             confirmButtonHoverColor="hover:bg-[#B71C1C]"
           />
@@ -198,7 +233,7 @@ export default function AdminModulesPage() {
             onConfirm={confirmSync}
             icon={<RefreshCw className="w-8 h-8 text-[#0092bd]" aria-hidden="true" />}
             iconBgColor="bg-alice-blue"
-            message={`Êtes-vous sûr de vouloir forcer la synchronisation du module <strong>${selectedModule.name}</strong> ?<br />Cette action va actualiser immédiatement toutes les données du capteur.`}
+            message={`Êtes-vous sûr de vouloir forcer la synchronisation du module <strong>${selectedModule.name || selectedModule.hardwareId}</strong> ?<br />Cette action va actualiser immédiatement toutes les données du capteur.`}
             confirmText="Synchroniser"
             confirmButtonColor="bg-[#0092bd]"
             confirmButtonHoverColor="hover:bg-[#007a9d]"
