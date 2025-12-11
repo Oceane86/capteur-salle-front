@@ -38,7 +38,7 @@ export default function RoomsList() {
     router.push("/login");
   };
 
-  // 🔹 Récupération des salles depuis l'API
+  // Récupération des salles depuis l'API
   useEffect(() => {
     const loadRooms = async () => {
       try {
@@ -56,7 +56,7 @@ export default function RoomsList() {
     loadRooms();
   }, []);
 
-  // 🔹 Filtrage côté front
+  // Filtrage côté front
   const filteredRooms = rooms.filter((room) => {
     const matchesSearch = room.name.toLowerCase().includes(searchTerm.toLowerCase());
 
