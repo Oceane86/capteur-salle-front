@@ -199,10 +199,10 @@ export default function AdminDashboard() {
                         {rooms.map((room) => (
                           <button
                             key={room._id}
-                            onClick={() => router.push(`/admin/modules/${room.moduleId}`)}
+                            onClick={() => router.push(`/admin/room/${room._id}`)} // <-- Changement ici
                             className={`relative aspect-square rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center
-                              transition-all duration-200 hover:scale-105 hover:shadow-md
-                              ${!room.occupied ? 'bg-[#00C853]' : 'bg-[#D50000]'}`}
+          transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer
+          ${!room.occupied ? 'bg-[#00C853]' : 'bg-[#D50000]'}`}
                             aria-label={`Salle ${room.name}, température ${room.temperature}°C, ${room.occupied ? 'occupée' : 'disponible'}${room.needsAiring ? ', aération nécessaire' : ''}`}
                           >
                             {room.needsAiring && (
@@ -214,6 +214,7 @@ export default function AdminDashboard() {
                         ))}
                       </div>
                     </div>
+
                   </div>
                 </div>
 
