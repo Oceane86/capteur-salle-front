@@ -55,6 +55,7 @@ export default function RoomDetails() {
                     <button
                         onClick={() => router.push("/student/rooms")}
                         className="mt-4 px-4 py-2 bg-[#0092bd] text-white rounded-lg"
+                        aria-label="Retour à la liste des salles"
                     >
                         Retour aux salles
                     </button>
@@ -151,7 +152,7 @@ export default function RoomDetails() {
                         className="flex items-center gap-2 text-[#5F6368] hover:text-[#0092bd] mb-6 transition-colors cursor-pointer"
                         aria-label="Retour à la liste des salles"
                     >
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="w-5 h-5" aria-hidden="true" />
                         <span>Retour aux salles</span>
                     </button>
 
@@ -167,9 +168,10 @@ export default function RoomDetails() {
                                 {room.status === "available" && (
                                     <button
                                         onClick={() => setIsModalOpen(true)}
-                                        className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9a]"
+                                        className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9a] cursor-pointer"
+                                        aria-label="Ouvrir le modal de réservation"
                                     >
-                                        <Calendar className="w-5 h-5" />
+                                        <Calendar className="w-5 h-5" aria-hidden="true" />
                                         <span>Réserver</span>
                                     </button>
                                 )}
