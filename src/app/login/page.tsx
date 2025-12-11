@@ -9,12 +9,22 @@ export default function LoginScreen() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    setError("");
+
+    if (!username || !password) {
+      setError("Veuillez remplir tous les champs.");
+      return;
+    }
+
     if (username === "admin" && password === "admin") {
       router.push("/admin/dashboard");
+    } else {
+      setError("Identifiants incorrects. Veuillez réessayer.");
     }
   };
 
@@ -105,6 +115,17 @@ export default function LoginScreen() {
                 Connexion
               </button>
             </form>
+
+            {/* Error Message */}
+            {error && (
+              <div
+                className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
+                role="alert"
+                aria-live="assertive"
+              >
+                {error}
+              </div>
+            )}
 
             {/* Student Access */}
             <section aria-labelledby="student-access" className="mt-8 pt-6 border-t border-gray-200">
