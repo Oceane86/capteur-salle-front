@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/Toast";
 import Navbar from "@/components/Navbar";
-import { fetchRooms, createModule } from "@/lib/api";
+import { fetchRooms, fetchModules, createModule } from "@/lib/api";
 import { ArrowLeft, Bluetooth, AlertCircle } from "lucide-react";
 
 export default function AddModule() {
@@ -26,24 +26,37 @@ export default function AddModule() {
     router.push("/login");
   };
 
-  // 🔹 Récupérer les salles
+  // Récupérer les salles disponibles
   useEffect(() => {
-    const loadRooms = async () => {
+    const loadAvailableRooms = async () => {
       try {
-        const data = await fetchRooms();
-        // Assurer que c"est bien un tableau
-        if (Array.isArray(data)) {
-          setRooms(data.filter((r) => r && (r._id || r.id)));
-        } else {
+        const [allRooms, modules] = await Promise.all([fetchRooms(), fetchModules()]);
+
+        if (!Array.isArray(allRooms) || !Array.isArray(modules)) {
+          notify("Erreur lors du chargement des salles ou modules.", "error");
           setRooms([]);
-          notify("Erreur : les salles n'ont pas pu être chargées.", "error");
+          return;
         }
+
+        // Identifier les salles déjà occupées par un module
+        const occupiedRoomIds = modules
+          .map((m: any) => m.room?.id || m.room?._id)
+          .filter(Boolean);
+
+        // Ne garder que les salles libres
+        const availableRooms = allRooms.filter(
+          (r: any) => r && (r._id || r.id) && !occupiedRoomIds.includes(r._id || r.id)
+        );
+
+        setRooms(availableRooms);
       } catch (err) {
         console.error(err);
-        notify("Impossible de charger les salles.", "error");
+        notify("Impossible de charger les salles disponibles.", "error");
+        setRooms([]);
       }
     };
-    loadRooms();
+
+    loadAvailableRooms();
   }, [notify]);
 
   const handleSubmit = async (e: React.FormEvent) => {
