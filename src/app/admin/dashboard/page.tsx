@@ -95,7 +95,7 @@ export default function AdminDashboard() {
           {/* Header */}
           <header className="mb-8" role="banner">
             <h1 className="text-[#1A1A1A] mb-2">Dashboard administrateur</h1>
-            <p className="text-[#5F6368]">Vue d&apos;ensemble du campus IoT</p>
+            <p className="text-[#5F6368]">Vue d&apos;ensemble du campus</p>
           </header>
 
           {loading && <p role="status" aria-live="polite">Chargement des données...</p>}
