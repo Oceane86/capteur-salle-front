@@ -16,7 +16,7 @@ export default function AddModule() {
     roomId: ''
   });
 
-   const onLogout = () => {
+  const onLogout = () => {
     localStorage.removeItem("role");
     router.push("/login");
   };
@@ -32,7 +32,7 @@ export default function AddModule() {
       <Navbar role="admin" onLogout={onLogout} />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        
+
         {/* Back Button */}
         <button
           onClick={() => router.push('/admin/modules')}
@@ -54,7 +54,7 @@ export default function AddModule() {
           <div>
             <p className="text-[#1A1A1A] mb-1">Configuration BLE requise</p>
             <p className="text-[#5F6368] text-sm">
-              Vous devez être physiquement proche du module pour la configuration initiale via Bluetooth Low Energy. 
+              Vous devez être physiquement proche du module pour la configuration initiale via Bluetooth Low Energy.
               Assurez-vous que le module est allumé et en mode appairage.
             </p>
           </div>
@@ -173,7 +173,7 @@ export default function AddModule() {
             <div>
               <h3 className="text-[#1A1A1A] mb-2">Besoin d&apos;aide ?</h3>
               <p className="text-[#5F6368] text-sm">
-                Si le module ne s&apos;appaire pas, vérifiez que le Bluetooth est activé et que vous êtes à moins de 5 mètres du module.  
+                Si le module ne s&apos;appaire pas, vérifiez que le Bluetooth est activé et que vous êtes à moins de 5 mètres du module.
                 Consultez la documentation technique pour plus d&apos;informations.
               </p>
             </div>

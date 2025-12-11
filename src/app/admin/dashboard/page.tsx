@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { mockRooms, mockModules, mockAlerts } from "@/data/mockData";
-import { Settings, Bell, Activity, AlertTriangle, Thermometer } from "lucide-react";
+import { Settings, Bell, Activity, AlertTriangle, Thermometer, Plus } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function AdminDashboard() {
         localStorage.removeItem("role");
         router.push("/login");
       }} />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
                   onClick={() => router.push('/admin/modules/add')}
                   className="flex items-center gap-2 bg-[#0092bd] text-white px-4 py-2 rounded-lg hover:bg-[#007a9d] transition-colors cursor-pointer"
                 >
-                  <Settings className="w-4 h-4" />
+                  <Plus className="w-5 h-5" />
                   <span>Ajouter un module</span>
                 </button>
               </div>
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
                   <span className="text-[#5F6368] text-sm">Occupée</span>
                 </div>
               </div>
-              
+
               {/* Simple Grid Layout */}
               <div className="bg-[#F5F7FA] rounded-lg p-4 sm:p-8">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
