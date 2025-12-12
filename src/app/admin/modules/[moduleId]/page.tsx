@@ -176,7 +176,7 @@ export default function AdminModuleDetailPage() {
 
   const handleDelete = async () => {
     try {
-      await deleteModule(module.id);
+      await deleteModule(module.hardwareId);
 
       notify("Module supprimé avec succès !", "success");
 

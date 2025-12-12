@@ -63,17 +63,9 @@ export const createModule = async ({
   return res.data;
 };
 
-export async function deleteModule(id: string) {
-  const res = await fetch(`/api/modules/${id}`, {
-    method: "DELETE",
-  });
-
-  if (!res.ok) {
-    throw new Error("Suppression impossible");
-  }
-
-  return res.json();
-}
-
+export const deleteModule = async (hardwareId: string) => {
+  const res = await api.delete(`/api/modules/${hardwareId}`);
+  return res.data;
+};
 
 export default api;
