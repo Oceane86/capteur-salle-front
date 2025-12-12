@@ -243,7 +243,7 @@ export default function RoomDetails() {
 
                         {/* Temperature */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            {room.temperature.length > 0 ? (
+                            {room.temperature != null ? (
                                 <>
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="bg-[#F5F7FA] rounded-lg p-3">
@@ -281,7 +281,7 @@ export default function RoomDetails() {
 
                         {/* Humidity */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            {room.humidity.length > 0 ? (
+                            {room.humidity != null ? (
                                 <>
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="bg-[#F5F7FA] rounded-lg p-3">
@@ -321,7 +321,7 @@ export default function RoomDetails() {
 
                         {/* CO2 */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            {tempData.length > 0 ? (
+                            {tempData != null ? (
                                 <>
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="bg-[#F5F7FA] rounded-lg p-3">
@@ -371,7 +371,7 @@ export default function RoomDetails() {
                                 </div>
                                 <div>
                                     <p className="text-[#5F6368]">Luminosité</p>
-                                    {room.brightness.length > 0 ? (
+                                    {room.brightness != null ? (
                                         <p className="text-[#1A1A1A] text-2xl">{room.brightness} lux</p>
                                     ) : (
                                         <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
@@ -390,7 +390,7 @@ export default function RoomDetails() {
                                 </div>
                                 <div>
                                     <p className="text-[#5F6368]">Niveau sonore</p>
-                                    {room.noise.length > 0 ? (
+                                    {room.noise != null ? (
                                         <p className="text-[#1A1A1A] text-2xl">{room.noise} dB</p>
                                     ) : (
                                         <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
@@ -409,7 +409,7 @@ export default function RoomDetails() {
                                 </div>
                                 <div>
                                     <p className="text-[#5F6368]">Indice de confort</p>
-                                    {room.co2.length > 0 && room.temperature.length > 0 && room.humidity.length > 0 && room.noise.length > 0 ? (
+                                    {room.co2 != null && room.temperature != null && room.humidity != null && room.noise != null ? (
                                         <p className="text-[#1A1A1A] text-2xl">{comfortIndex.label}</p>
                                     ) : (
                                         <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
@@ -428,7 +428,7 @@ export default function RoomDetails() {
                         {/* Temperature Chart */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <h3 className="text-[#1A1A1A] mb-4">Évolution de la température</h3>
-                            {tempData.length > 0 ? (
+                            {tempData != null ? (
                                 <ResponsiveContainer width="100%" height={200}>
                                     <LineChart data={tempData}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
@@ -448,7 +448,7 @@ export default function RoomDetails() {
                         {/* CO2 Chart */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <h3 className="text-[#1A1A1A] mb-4">Évolution du CO₂</h3>
-                            {co2Data.length > 0 ? (
+                            {co2Data != null ? (
                                 <ResponsiveContainer width="100%" height={200}>
                                     <LineChart data={co2Data}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
