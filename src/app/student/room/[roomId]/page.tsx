@@ -199,7 +199,7 @@ export default function RoomDetails() {
                                         : "N/A"}
                                 </p>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex flex-wrap items-center gap-3">
                                 {room.needsAiring && <AlertTriangle className="w-6 h-6 text-[#FF8F00]" />}
                                 <StatusBadge status={room.status} size="lg" />
                                 {room.status === "available" && (
@@ -209,7 +209,7 @@ export default function RoomDetails() {
                                         aria-label="Ouvrir le modal de réservation"
                                     >
                                         <Calendar className="w-5 h-5" aria-hidden="true" />
-                                        <span>Réserver</span>
+                                        <span className="hidden md:block">Réserver</span>
                                     </button>
                                 )}
                                 <button
@@ -218,7 +218,7 @@ export default function RoomDetails() {
                                     aria-label="Voir le planning"
                                 >
                                     <Calendar className="w-5 h-5" aria-hidden="true" />
-                                    <span>Planning</span>
+                                    <span className="hidden md:block">Planning</span>
                                 </button>
                             </div>
                         </div>
