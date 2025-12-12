@@ -243,69 +243,124 @@ export default function RoomDetails() {
 
                         {/* Temperature */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                    <Thermometer className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
-                                </div>
-                                <div>
-                                    <p className="text-[#5F6368]">Température</p>
-                                    <p className="text-[#1A1A1A] text-2xl">{room.temperature}°C</p>
-                                </div>
-                            </div>
-                            <div className="h-16 min-h-16" aria-hidden="true">
-                                <ResponsiveContainer width="100%" height={64}>
-                                    <LineChart data={tempData.slice(-10)}>
-                                        <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} dot={false} />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </div>
+                            {room.temperature.length > 0 ? (
+                                <>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                            <Thermometer className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[#5F6368]">Température</p>
+                                            <p className="text-[#1A1A1A] text-2xl">{room.temperature}°C</p>
+                                        </div>
+                                    </div>
+                                    <div className="h-16 min-h-16" aria-hidden="true">
+                                        <ResponsiveContainer width="100%" height={64}>
+                                            <LineChart data={tempData.slice(-10)}>
+                                                <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} dot={false} />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                            <Thermometer className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[#5F6368]">Température</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                        Aucune information disponible
+                                    </p>
+                                </>
+                            )}
                         </div>
 
                         {/* Humidity */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                    <Droplets className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
-                                </div>
-                                <div>
-                                    <p className="text-[#5F6368]">Humidité</p>
-                                    <p className="text-[#1A1A1A] text-2xl">{room.humidity}%</p>
-                                </div>
-                            </div>
-                            <div className="pt-4">
-                                <div className="w-full bg-gray-200 rounded-full h-2" aria-hidden="true">
-                                    <div
-                                        className="bg-[#0092bd] h-2 rounded-full transition-all duration-300"
-                                        style={{ width: `${room.humidity}%` }}
-                                    ></div>
-                                </div>
-                            </div>
+                            {room.humidity.length > 0 ? (
+                                <>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                            <Droplets className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[#5F6368]">Humidité</p>
+                                            <p className="text-[#1A1A1A] text-2xl">{room.humidity}%</p>
+                                        </div>
+                                    </div>
+                                    <div className="pt-4">
+                                        <div className="w-full bg-gray-200 rounded-full h-2" aria-hidden="true">
+                                            <div
+                                                className="bg-[#0092bd] h-2 rounded-full transition-all duration-300"
+                                                style={{ width: `${room.humidity}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                            <Droplets className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[#5F6368]">Humidité</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                        Aucune information disponible
+                                    </p>
+                                </>
+                            )}
+
                         </div>
 
                         {/* CO2 */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="bg-[#F5F7FA] rounded-lg p-3">
-                                    <Wind className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
-                                </div>
-                                <div>
-                                    <p className="text-[#5F6368]">CO₂</p>
-                                    <p className="text-[#1A1A1A] text-2xl">{room.co2} ppm</p>
-                                </div>
-                            </div>
-                            <div className="h-16 min-h-16" aria-hidden="true">
-                                <ResponsiveContainer width="100%" height={64}>
-                                    <LineChart data={co2Data.slice(-10)}>
-                                        <Line
-                                            type="monotone"
-                                            dataKey="value"
-                                            stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"}
-                                            strokeWidth={2}
-                                            dot={false}
-                                        />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </div>
+                            {tempData.length > 0 ? (
+                                <>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                            <Wind className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[#5F6368]">CO₂</p>
+                                            <p className="text-[#1A1A1A] text-2xl">{room.co2} ppm</p>
+                                        </div>
+                                    </div>
+                                    <div className="h-16 min-h-16" aria-hidden="true">
+                                        <ResponsiveContainer width="100%" height={64}>
+                                            <LineChart data={co2Data.slice(-10)}>
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="value"
+                                                    stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"}
+                                                    strokeWidth={2}
+                                                    dot={false}
+                                                />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="bg-[#F5F7FA] rounded-lg p-3">
+                                            <Wind className="w-6 h-6 text-[#0092bd]" aria-hidden="true" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[#5F6368]">CO₂</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                        Aucune information disponible
+                                    </p>
+                                </>
+                            )}
                         </div>
 
                         {/* Brightness */}
@@ -316,7 +371,13 @@ export default function RoomDetails() {
                                 </div>
                                 <div>
                                     <p className="text-[#5F6368]">Luminosité</p>
-                                    <p className="text-[#1A1A1A] text-2xl">{room.brightness} lux</p>
+                                    {room.brightness.length > 0 ? (
+                                        <p className="text-[#1A1A1A] text-2xl">{room.brightness} lux</p>
+                                    ) : (
+                                        <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                            Aucune information disponible
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -329,7 +390,13 @@ export default function RoomDetails() {
                                 </div>
                                 <div>
                                     <p className="text-[#5F6368]">Niveau sonore</p>
-                                    <p className="text-[#1A1A1A] text-2xl">{room.noise} dB</p>
+                                    {room.noise.length > 0 ? (
+                                        <p className="text-[#1A1A1A] text-2xl">{room.noise} dB</p>
+                                    ) : (
+                                        <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                            Aucune information disponible
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -342,7 +409,13 @@ export default function RoomDetails() {
                                 </div>
                                 <div>
                                     <p className="text-[#5F6368]">Indice de confort</p>
-                                    <p className="text-[#1A1A1A] text-2xl">{comfortIndex.label}</p>
+                                    {room.co2.length > 0 && room.temperature.length > 0 && room.humidity.length > 0 && room.noise.length > 0 ? (
+                                        <p className="text-[#1A1A1A] text-2xl">{comfortIndex.label}</p>
+                                    ) : (
+                                        <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                            Aucune information disponible
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -355,37 +428,50 @@ export default function RoomDetails() {
                         {/* Temperature Chart */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <h3 className="text-[#1A1A1A] mb-4">Évolution de la température</h3>
-                            <ResponsiveContainer width="100%" height={200}>
-                                <LineChart data={tempData}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                                    <XAxis dataKey="time" stroke="#5F6368" />
-                                    <YAxis stroke="#5F6368" />
-                                    <Tooltip />
-                                    <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} aria-hidden="true" />
-                                </LineChart>
-                            </ResponsiveContainer>
+                            {tempData.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <LineChart data={tempData}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                                        <XAxis dataKey="time" stroke="#5F6368" />
+                                        <YAxis stroke="#5F6368" />
+                                        <Tooltip />
+                                        <Line type="monotone" dataKey="value" stroke="#0092bd" strokeWidth={2} aria-hidden="true" />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                    Aucune information disponible
+                                </p>
+                            )}
                         </div>
 
                         {/* CO2 Chart */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <h3 className="text-[#1A1A1A] mb-4">Évolution du CO₂</h3>
-                            <ResponsiveContainer width="100%" height={200}>
-                                <LineChart data={co2Data}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                                    <XAxis dataKey="time" stroke="#5F6368" />
-                                    <YAxis stroke="#5F6368" />
-                                    <Tooltip />
-                                    <Line
-                                        type="monotone"
-                                        dataKey="value"
-                                        stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"}
-                                        strokeWidth={2}
-                                        aria-hidden="true"
-                                    />
-                                </LineChart>
-                            </ResponsiveContainer>
+                            {co2Data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <LineChart data={co2Data}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
+                                        <XAxis dataKey="time" stroke="#5F6368" />
+                                        <YAxis stroke="#5F6368" />
+                                        <Tooltip />
+                                        <Line
+                                            type="monotone"
+                                            dataKey="value"
+                                            stroke={room.co2 > 1000 ? "#FF8F00" : "#0092bd"}
+                                            strokeWidth={2}
+                                            aria-hidden="true"
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <p className="text-center text-[#5F6368]" role="status" aria-live="polite">
+                                    Aucune information disponible
+                                </p>
+                            )}
                         </div>
                     </section>
+
 
                     {/* Reservation Modal */}
                     <ReservationModal
