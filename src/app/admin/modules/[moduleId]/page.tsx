@@ -33,7 +33,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { fetchModuleById, fetchRooms, fetchModules, createModule } from "@/lib/api";
+import { fetchModuleById, fetchRooms, fetchModules, createModule, deleteModule } from "@/lib/api";
 
 // Génération de données fictives historiques si nécessaire
 const generateHistoricalData = (currentValue: number) => {
@@ -174,10 +174,19 @@ export default function AdminModuleDetailPage() {
   const handlePowerToggle = () => setShowPowerModal(true);
   const handleSync = () => setShowSyncModal(true);
 
-  const handleDelete = () => {
-    notify("Module supprimé avec succès !", "error");
-    router.push("/admin/modules");
+  const handleDelete = async () => {
+    try {
+      await deleteModule(module.id);
+
+      notify("Module supprimé avec succès !", "success");
+
+      router.push("/admin/modules");
+    } catch (err: any) {
+      console.error(err);
+      notify("Erreur lors de la suppression du module.", "error");
+    }
   };
+
 
   const confirmDelete = () => {
     setShowDeleteModal(false);
